@@ -8,5 +8,4 @@ import ru.prooftech.production.entities.Product;
 @Repository
 public interface ProductRepository extends CrudRepository<Product,Long>,
         JpaRepository<Product,Long> {
-
 }

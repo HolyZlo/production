@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.prooftech.production.entities.Product;
 import ru.prooftech.production.services.ProductService;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -21,8 +22,13 @@ public class ProductController {
     }
 
 
-    @GetMapping("/products")
+    @GetMapping("")
     public Product product(@RequestParam(value = "id") Optional<Long> idProduct) {
         return productService.getProductById(idProduct.orElse(0L));
+    }
+
+    @GetMapping("/")
+    public List<Product> productList() {
+        return productService.getAllProducts();
     }
 }

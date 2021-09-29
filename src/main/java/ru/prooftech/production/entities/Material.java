@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
+import java.util.HashMap;
 
 @Entity(name = "materials")
 @Data
@@ -19,6 +21,5 @@ public class Material {
     private String name;
     private String price;
     private long quantity;
-
 
 }

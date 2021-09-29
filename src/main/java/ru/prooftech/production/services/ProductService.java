@@ -5,6 +5,8 @@ import org.springframework.stereotype.Service;
 import ru.prooftech.production.entities.Product;
 import ru.prooftech.production.repositories.ProductRepository;
 
+import java.util.List;
+
 @Service("productService")
 public class ProductService {
 
@@ -17,5 +19,14 @@ public class ProductService {
 
     public Product getProductById(Long id) {
         return productRepository.findById(id).orElse(new Product());
+    }
+
+
+    public Product saveProduct(Product product) {
+        return productRepository.save(product);
+    }
+
+    public List<Product> getAllProducts() {
+        return productRepository.findAll();
     }
 }
