@@ -3,16 +3,13 @@ package ru.prooftech.production.entities;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
-import java.util.HashMap;
+import java.util.Map;
 
 @AllArgsConstructor
 @NoArgsConstructor
-public class Product {
-
+public class Order {
     private Long id;
     private String name;
-    private String description;
-    private long quantity;
-    HashMap<Material, Integer> materialHashMap;
-
+    private Person person;
+    private Map<Product, Integer> products;
 }
