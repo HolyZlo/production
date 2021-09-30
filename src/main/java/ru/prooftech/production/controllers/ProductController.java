@@ -24,11 +24,11 @@ public class ProductController {
 
     @GetMapping("")
     public Product product(@RequestParam(value = "id") Optional<Long> idProduct) {
-        return productService.getProductById(idProduct.orElse(0L));
+        return productService.getById(idProduct.orElse(0L));
     }
 
     @GetMapping("/")
     public List<Product> productList() {
-        return productService.getAllProducts();
+        return productService.findAll();
     }
 }

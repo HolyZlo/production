@@ -17,16 +17,20 @@ public class ProductService {
         this.productRepository = productRepository;
     }
 
-    public Product getProductById(Long id) {
-        return productRepository.findById(id).orElse(new Product());
+    public Product getById(Long id) {
+        return productRepository.getById(id);
     }
 
-
-    public Product saveProduct(Product product) {
+    public Product save(Product product) {
         return productRepository.save(product);
     }
 
-    public List<Product> getAllProducts() {
+    public void saveAll(Iterable<Product> iterable){
+        productRepository.saveAll(iterable);
+    }
+
+    public List<Product> findAll() {
         return productRepository.findAll();
     }
+
 }

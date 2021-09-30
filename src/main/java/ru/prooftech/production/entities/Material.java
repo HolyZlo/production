@@ -4,10 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.ManyToMany;
+import javax.persistence.*;
 import java.util.HashMap;
 
 @Entity(name = "materials")
@@ -17,9 +14,18 @@ import java.util.HashMap;
 public class Material {
     @Id
     @GeneratedValue
+    @Column(name = "id")
     private long id;
-    private String name;
-    private String price;
-    private long quantity;
+    @Column(name = "name")
+    private String materialName;
+    @Column(name = "price")
+    private int materialPrice;
+    @Column(name = "quantity")
+    private long materialQuantity;
 
+    public Material(String materialName, int materialPrice, long materialQuantity) {
+        this.materialName = materialName;
+        this.materialPrice = materialPrice;
+        this.materialQuantity = materialQuantity;
+    }
 }

@@ -7,21 +7,35 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.persistence.*;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 @Data
-@Entity
+@Entity(name = "products")
 @AllArgsConstructor
 @NoArgsConstructor
 public class Product {
+
     @Id
     @GeneratedValue
+    @Column(name = "id")
     private Long id;
-    private String name;
-    private String description;
-    private long quantity;
-    @OneToMany
-    private Set<Material> materialSet;
-    //    HashMap<Material, Integer> materialHashMap;
+    @Column(name = "name")
+    private String productName;
+    @Column(name = "description")
+    private String productDescription;
+    @Column(name = "quantity")
+    private int productQuantity;
+    @Column(name = "price")
+    private double productPrice;
 
+    @ElementCollection
+    private Map<Material, Integer> materialMap;
+
+    public Product(String productName, String productDescription, int productQuantity, double productPrice) {
+        this.productName = productName;
+        this.productDescription = productDescription;
+        this.productQuantity = productQuantity;
+        this.productPrice = productPrice;
+    }
 }
