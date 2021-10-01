@@ -8,7 +8,6 @@ import org.springframework.hateoas.RepresentationModel;
 import javax.persistence.*;
 import java.util.Map;
 
-@EqualsAndHashCode(callSuper = true)
 @Builder
 @Data
 @Entity(name = "products")
