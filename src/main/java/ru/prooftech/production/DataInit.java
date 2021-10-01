@@ -10,6 +10,7 @@ import ru.prooftech.production.entities.Order;
 import ru.prooftech.production.entities.Person;
 import ru.prooftech.production.entities.Product;
 import ru.prooftech.production.services.MaterialService;
+import ru.prooftech.production.services.OrderService;
 import ru.prooftech.production.services.PersonService;
 import ru.prooftech.production.services.ProductService;
 
@@ -22,6 +23,13 @@ public class DataInit implements ApplicationRunner {
     private MaterialService materialService;
 
     private PersonService personService;
+
+    private OrderService orderService;
+
+    @Autowired
+    public void setOrderService(OrderService orderService) {
+        this.orderService = orderService;
+    }
 
     @Autowired
     public void setMaterialService(MaterialService materialService) {
@@ -46,12 +54,20 @@ public class DataInit implements ApplicationRunner {
         Material material3 = new Material("Дихлорметан", 1000, 1000);
         materialService.saveAll(List.of(material1, material2, material3));
 //-----------        Продукты
-        Product product1 = new Product("Подставка для телефона",
-                "Подставка для телефона из PLA пластика", 150, 100.0);
-        product1.setMaterialMap(new HashMap<>(Map.of(material1, 50, material2, 30, material3, 15)));
-        Product product2 = new Product("Зажим для пакетов",
-                "Зажим для пакетов из PETG пластика", 150, 20.0);
-        product2.setMaterialMap(new HashMap<>(Map.of(material1, 20, material2, 10, material3, 5)));
+        Product product1 = Product.builder()
+                .productName("Подставка для телефона")
+                .productDescription("Подставка для телефона из PLA пластика")
+                .productQuantity(150)
+                .productPrice(100.0)
+                .materialMap(new HashMap<>(Map.of(material1, 50, material2, 30, material3, 15)))
+                .build();
+        Product product2 = Product.builder()
+                .productName("Зажим для пакетов")
+                .productDescription("Зажим для пакетов из PETG пластика")
+                .productQuantity(150)
+                .productPrice(20.0)
+                .materialMap(new HashMap<>(Map.of(material1, 20, material2, 10, material3, 5)))
+                .build();
         productService.saveAll(List.of(product1, product2));
 //-----------       Клиенты
         Person person1 = new Person("Иван", "Иванов", 25, "+79021111111", 50000L);
@@ -65,9 +81,15 @@ public class DataInit implements ApplicationRunner {
         order.setCreatedOn(new Date());
         order.setProductMap(Map.of(product1, 50, product2, 15));
         System.out.println(order);
+
 //        order.calculateOrder();
 //        System.out.println(order.getInTotal());
 //        System.out.println(order.checkMaterialLeftovers());
 //        System.out.println(order);
+
+        orderService.save(order);
+
+        //-----------       Заказы
+
     }
 }

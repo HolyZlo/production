@@ -1,20 +1,20 @@
 package ru.prooftech.production.entities;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import org.springframework.web.bind.annotation.RequestMapping;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.*;
+import org.springframework.hateoas.RepresentationModel;
 
 import javax.persistence.*;
-import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
+@EqualsAndHashCode(callSuper = true)
+@Builder
 @Data
 @Entity(name = "products")
 @AllArgsConstructor
 @NoArgsConstructor
-public class Product {
+public class Product extends RepresentationModel<Product> {
 
     @Id
     @GeneratedValue
@@ -32,10 +32,8 @@ public class Product {
     @ElementCollection
     private Map<Material, Integer> materialMap;
 
-    public Product(String productName, String productDescription, int productQuantity, double productPrice) {
-        this.productName = productName;
-        this.productDescription = productDescription;
-        this.productQuantity = productQuantity;
-        this.productPrice = productPrice;
+    @JsonCreator
+    public Product(@JsonProperty("name") String productName){
+        this.setProductName(productName);
     }
 }

@@ -1,6 +1,7 @@
 package ru.prooftech.production.entities;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -13,9 +14,10 @@ import java.util.concurrent.atomic.AtomicReference;
 
 @Entity(name = "orders")
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Order {
+public class Order{
     @Id
     @GeneratedValue
     private Long id;
