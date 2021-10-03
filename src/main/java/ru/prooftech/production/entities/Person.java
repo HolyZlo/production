@@ -1,25 +1,26 @@
 package ru.prooftech.production.entities;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import org.aspectj.weaver.ast.Or;
+import lombok.*;
+import org.springframework.hateoas.RepresentationModel;
 
 import javax.persistence.*;
 import java.util.List;
 
-@Entity(name = "persons")
-@Data
+
 @AllArgsConstructor
 @NoArgsConstructor
-public class Person {
+@Getter
+@Setter
+@Builder
+@Entity(name = "persons")
+public class Person  extends RepresentationModel<Person> {
     @Id
     @GeneratedValue
     @Column(name = "id")
-    private Long idPerson;
+    private Long id;
 
     @Column(name = "name")
-    private String namePerson;
+    private String personName;
 
     @Column(name = "surname")
     private String surname;
@@ -32,12 +33,4 @@ public class Person {
 
     @OneToMany
     private List<Order> listOrders;
-
-    public Person(String namePerson, String surname, int age, String phoneNumber, long balance) {
-        this.namePerson = namePerson;
-        this.surname = surname;
-        this.age = age;
-        this.phoneNumber = phoneNumber;
-        this.balance = balance;
-    }
 }

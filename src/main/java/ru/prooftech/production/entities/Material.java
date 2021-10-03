@@ -1,17 +1,19 @@
 package ru.prooftech.production.entities;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.springframework.hateoas.RepresentationModel;
 
 import javax.persistence.*;
-import java.util.HashMap;
+import java.util.Collection;
 
-@Entity(name = "materials")
-@Data
+
 @NoArgsConstructor
 @AllArgsConstructor
-public class Material {
+@Getter
+@Setter
+@Builder
+@Entity(name = "materials")
+public class Material extends RepresentationModel<Material> {
     @Id
     @GeneratedValue
     @Column(name = "id")
@@ -23,9 +25,7 @@ public class Material {
     @Column(name = "quantity")
     private long materialQuantity;
 
-    public Material(String materialName, int materialPrice, long materialQuantity) {
-        this.materialName = materialName;
-        this.materialPrice = materialPrice;
-        this.materialQuantity = materialQuantity;
-    }
+    @OneToMany(mappedBy = "material", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Collection<CompositionProduct> compositionProduct;
+
 }

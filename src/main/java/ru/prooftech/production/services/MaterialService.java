@@ -6,6 +6,7 @@ import ru.prooftech.production.entities.Material;
 import ru.prooftech.production.repositories.MaterialRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service("materialService")
 public class MaterialService {
@@ -16,8 +17,8 @@ public class MaterialService {
         this.materialRepository = materialRepository;
     }
 
-    public Material getById(Long id) {
-        return materialRepository.getById(id);
+    public Optional<Material> findById(Long id) {
+        return materialRepository.findById(id);
     }
 
     public Material save(Material material) {

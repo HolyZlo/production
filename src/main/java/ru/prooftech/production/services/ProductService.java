@@ -6,6 +6,7 @@ import ru.prooftech.production.entities.Product;
 import ru.prooftech.production.repositories.ProductRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service("productService")
 public class ProductService {
@@ -17,15 +18,15 @@ public class ProductService {
         this.productRepository = productRepository;
     }
 
-    public Product findById(Long id) {
-        return productRepository.findById(id).orElse(new Product());
+    public Optional<Product> findById(Long id) {
+        return productRepository.findById(id);
     }
 
     public Product save(Product product) {
         return productRepository.save(product);
     }
 
-    public void saveAll(Iterable<Product> iterable){
+    public void saveAll(Iterable<Product> iterable) {
         productRepository.saveAll(iterable);
     }
 

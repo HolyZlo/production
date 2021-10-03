@@ -5,6 +5,9 @@ import org.springframework.stereotype.Service;
 import ru.prooftech.production.entities.Person;
 import ru.prooftech.production.repositories.PersonRepository;
 
+import java.util.List;
+import java.util.Optional;
+
 @Service("personService")
 public class PersonService {
     private PersonRepository personRepository;
@@ -14,14 +17,19 @@ public class PersonService {
         this.personRepository = personRepository;
     }
 
-    public Person save(Person person){
+    public Person save(Person person) {
         return personRepository.save(person);
     }
-    public void saveAll(Iterable<Person> persons){
+
+    public void saveAll(Iterable<Person> persons) {
         personRepository.saveAll(persons);
     }
 
-    public Person getById(Long id) {
-        return personRepository.getById(id);
+    public Optional<Person> findById(Long id) {
+        return personRepository.findById(id);
+    }
+
+    public List<Person> findAll() {
+        return personRepository.findAll();
     }
 }

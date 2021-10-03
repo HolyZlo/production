@@ -1,6 +1,5 @@
 package ru.prooftech.production.controllers;
 
-import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,14 +35,9 @@ public class OrderControllerTest {
     @Autowired
     private ProductRepository productRepository;
 
-    @After
-    public void tearDown() {
-//        orderRepository.deleteAll();
-    }
-
     @Test
     public void testGetOrders() throws Exception {
-        Order order = Order.builder().nameOrder("Test1").build();
+        Order order = Order.builder().orderName("Test1").build();
         orderRepository.save(order);
 
         ResultActions resultActions = mockMvc.perform(get("/orders/{id}", order.getId())).andDo(print());

@@ -1,10 +1,8 @@
 package ru.prooftech.production.services;
 
-import org.aspectj.weaver.ast.Or;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.prooftech.production.entities.Order;
-import ru.prooftech.production.entities.Product;
 import ru.prooftech.production.repositories.OrderRepository;
 
 import java.util.List;
@@ -19,7 +17,7 @@ public class OrderService {
         this.orderRepository = orderRepository;
     }
 
-    public Optional<Order> getById(Long id) {
+    public Optional<Order> findById(Long id) {
         return orderRepository.findById(id);
     }
 
