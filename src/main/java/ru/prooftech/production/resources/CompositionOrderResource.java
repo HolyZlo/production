@@ -8,6 +8,7 @@ import org.springframework.hateoas.server.core.Relation;
 import ru.prooftech.production.controllers.OrderController;
 import ru.prooftech.production.controllers.ProductController;
 import ru.prooftech.production.entities.CompositionOrder;
+import ru.prooftech.production.entities.Order;
 import ru.prooftech.production.entities.Person;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
@@ -28,8 +29,9 @@ public class CompositionOrderResource extends RepresentationModel<CompositionOrd
         this.priceComposition = compositionOrder.getPriceComposition();
         this.countProduct = compositionOrder.getCountProduct();
         this.productName = compositionOrder.getProduct().getProductName();
-        add(linkTo(methodOn(OrderController.class).getOrderById(compositionOrder.getProduct().getId())).withRel("product"));
-        add(linkTo(methodOn(ProductController.class).getComposition(compositionOrder.getProduct().getId())).withSelfRel());
+
+        add(linkTo(methodOn(OrderController.class).getOrderById(compositionOrder.getOrder().getId())).withSelfRel());
+//        add(linkTo(methodOn(OrderController.class).getOrderById(compositionOrder.getOrder().getId())).withSelfRel());
 
     }
 }

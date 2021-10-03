@@ -14,6 +14,7 @@ import ru.prooftech.production.services.ProductService;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
@@ -56,14 +57,12 @@ public class OrderController {
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-
-
     }
 
-    @PostMapping(value = "/{id}//create", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> createOrder(@PathVariable Long id, @RequestBody OrderResource orderResource) {
-        Person person = personService.findById(id).orElse(new Person());
-        if (person.getId() == null) {
+    @PostMapping(value = "/create", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> createOrder(@RequestParam(name = "personId") Optional<Long> id, @RequestBody OrderResource orderResource) {
+        Person person = personService.findById(id.orElse(0L)).orElse(new Person());
+        if (person.getId() == null ) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         Order order = Order.builder()
@@ -75,4 +74,6 @@ public class OrderController {
         orderService.save(order);
         return new ResponseEntity<>(getOrderById(order.getId()).getBody(), HttpStatus.CREATED);
     }
+
+
 }

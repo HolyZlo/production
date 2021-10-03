@@ -27,7 +27,6 @@ public class CompositionOrder extends RepresentationModel<CompositionProduct> {
     private Product product;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    private Person person;
-
+    private Order order;
 
 }

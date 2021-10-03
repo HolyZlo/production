@@ -31,7 +31,7 @@ public class PersonResource extends RepresentationModel<PersonResource> {
 
     public PersonResource(Person person) {
         this.idPerson = person.getId();
-        this.namePerson = person.getNamePerson();
+        this.namePerson = person.getPersonName();
         this.surname = person.getSurname();
         this.age = person.getAge();
         this.phoneNumber = person.getPhoneNumber();

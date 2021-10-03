@@ -36,13 +36,13 @@ public class Order extends RepresentationModel<Order> {
     @ManyToOne(fetch = FetchType.EAGER)
     private Person person;
 
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<CompositionOrder> composition;
 
 
     public void calculatePriceOrder() {
         AtomicReference<Double> total = new AtomicReference<>(0.0);
-        composition.forEach((product) -> total.set(total.get() + product.getPriceComposition() ));
+        composition.forEach((compositionOrder -> total.set(total.get() + compositionOrder.getPriceComposition() )));
         this.inTotal = total.get();
     }
 

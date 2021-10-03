@@ -4,13 +4,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.prooftech.production.entities.Order;
 import ru.prooftech.production.entities.Person;
+import ru.prooftech.production.resources.OrderResource;
 import ru.prooftech.production.resources.PersonResource;
 import ru.prooftech.production.services.OrderService;
 import ru.prooftech.production.services.PersonService;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
@@ -19,6 +23,12 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 public class PersonController {
     private PersonService personService;
     private OrderService orderService;
+    private OrderController orderController;
+
+    @Autowired
+    public void setOrderController(OrderController orderController) {
+        this.orderController = orderController;
+    }
 
     @Autowired
     public void setPersonService(PersonService personService) {
@@ -61,4 +71,12 @@ public class PersonController {
         personService.save(person);
         return new ResponseEntity<>(getPersonById(person.getId()).getBody(), HttpStatus.CREATED);
     }
+
+    // persons/{id}/orders/create
+    @PostMapping(value = "/{id}/orders/create", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> createOrder(@PathVariable Optional<Long> id, @RequestBody OrderResource orderResource) {
+        return orderController.createOrder(id, orderResource);
+    }
+
+
 }

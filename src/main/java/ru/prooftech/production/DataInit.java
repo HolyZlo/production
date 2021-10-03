@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 import ru.prooftech.production.entities.*;
 import ru.prooftech.production.services.*;
 
+import java.sql.Timestamp;
 import java.util.*;
 
 @Component
@@ -63,21 +64,15 @@ public class DataInit implements ApplicationRunner {
                 .productDescription("Подставка для телефона из PLA пластика")
                 .productQuantity(150)
                 .productPrice(100.0)
-//                .materialMap(new HashMap<>(Map.of(material1, 50, material2, 30, material3, 15)))
                 .build();
         Product product2 = Product.builder()
                 .productName("Зажим для пакетов")
                 .productDescription("Зажим для пакетов из PETG пластика")
                 .productQuantity(150)
                 .productPrice(20.0)
-//                .materialMap(new HashMap<>(Map.of(material1, 20, material2, 10, material3, 5)))
                 .build();
-//        product1.setComposition(List.of(CompositionProduct.builder().product(product1).countMaterial(50).material(material1).build(),
-//                CompositionProduct.builder().product(product1).countMaterial(50).material(material2).build()));
 
         productService.saveAll(List.of(product1, product2));
-
-
         //-----------      Состав продуктов
         CompositionProduct compositionProduct1 = CompositionProduct.builder().product(product1).material(material1).countMaterial(20).build();
         CompositionProduct compositionProduct2 = CompositionProduct.builder().product(product1).material(material2).countMaterial(10).build();
@@ -88,7 +83,6 @@ public class DataInit implements ApplicationRunner {
         compositionProductService.saveAll(List.of(compositionProduct1, compositionProduct2, compositionProduct3, compositionProduct4, compositionProduct5, compositionProduct6));
 
 //-----------       Клиенты
-
         Person person1 = Person.builder().personName("Михаил").surname("Иванов").age(45).balance(20_000)
                 .phoneNumber("+79021933277").build();
         Person person2 = Person.builder().personName("Максим").surname("Максимов").age(34).balance(100_000)
@@ -97,21 +91,19 @@ public class DataInit implements ApplicationRunner {
                 .phoneNumber("+79021933277").build();
         personService.saveAll(List.of(person1, person2, person3));
 //-----------       Заказы
+        Order order = Order.builder().createdOn(new Timestamp(System.currentTimeMillis()))
+                .person(person1)
+                .build();
 
-//        Order order = new Order();
-//        order.setNameOrder("Тестовый заказ");
-//        order.setCreatedOn(new Date());
-//        order.setProductMap(Map.of(product1, 50, product2, 15));
-//        System.out.println(order);
+        CompositionOrder compositionOrder = CompositionOrder.builder().product(product1)
+               .order(order).countProduct(20).build();
+        CompositionOrder compositionOrder1 = CompositionOrder.builder().product(product1)
+               .order(order).countProduct(30).build();
+        CompositionOrder compositionOrder3 = CompositionOrder.builder().product(product1)
+               .order(order).countProduct(10).build();
 
-//        order.calculateOrder();
-//        System.out.println(order.getInTotal());
-//        System.out.println(order.checkMaterialLeftovers());
-//        System.out.println(order);
+        order.setComposition(List.of(compositionOrder,compositionOrder1,compositionOrder3));
 
-//        orderService.save(order);
-
-        //-----------       Заказы
-
+        orderService.save(order);
     }
 }
