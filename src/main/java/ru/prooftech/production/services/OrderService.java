@@ -3,6 +3,7 @@ package ru.prooftech.production.services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.prooftech.production.entities.Order;
+import ru.prooftech.production.entities.Person;
 import ru.prooftech.production.repositories.OrderRepository;
 
 import java.util.List;
@@ -33,4 +34,7 @@ public class OrderService {
         return orderRepository.findAll();
     }
 
+    public  List<Order> findAllByPerson(Person person){
+        return orderRepository.findAllByPerson(person);
+    }
 }

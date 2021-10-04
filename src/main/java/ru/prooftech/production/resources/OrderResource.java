@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.hateoas.RepresentationModel;
 import org.springframework.hateoas.server.core.Relation;
 import ru.prooftech.production.controllers.OrderController;
+import ru.prooftech.production.controllers.PersonController;
 import ru.prooftech.production.controllers.ProductController;
 import ru.prooftech.production.entities.CompositionOrder;
 import ru.prooftech.production.entities.Order;
@@ -30,6 +31,8 @@ public class OrderResource extends RepresentationModel<Order> {
     @Temporal(TemporalType.TIMESTAMP)
     private Date closedOn;
     private double inTotal;
+    private Long idPerson;
+    private String surname;
     private Collection<CompositionOrder> composition;
 
     public OrderResource(Order order) {
@@ -38,10 +41,9 @@ public class OrderResource extends RepresentationModel<Order> {
         this.createdOn = order.getCreatedOn();
         this.closedOn = order.getClosedOn();
         this.inTotal = order.getInTotal();
-
+        this.idPerson = order.getPerson().getId();
+        this.surname = order.getPerson().getSurname();
         add(linkTo(methodOn(OrderController.class).getOrderById(order.getId())).withSelfRel());
-
+        add(linkTo(methodOn(PersonController.class).getPersonById(order.getPerson().getId())).withRel("persons"));
     }
-
-
 }

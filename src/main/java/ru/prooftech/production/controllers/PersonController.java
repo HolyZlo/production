@@ -77,6 +77,12 @@ public class PersonController {
     public ResponseEntity<?> createOrder(@PathVariable Optional<Long> id, @RequestBody OrderResource orderResource) {
         return orderController.createOrder(id, orderResource);
     }
+    @GetMapping("/{id}/orders")
+    public ResponseEntity<?> getOrdersByIdPerson(@PathVariable Long id) {
+        return     personService.findById(id)
+                .map(person -> ResponseEntity.ok(new PersonResource(person)))
+                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
 
+    }
 
 }

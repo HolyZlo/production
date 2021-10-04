@@ -49,20 +49,30 @@ public class OrderController {
     }
 
     @GetMapping("/")
-    public ResponseEntity<?> getOrders() {
+    public ResponseEntity<?> getOrders(@RequestParam(required = false, name = "personId") Optional<Long> id) {
         List<OrderResource> orderResourceList = new ArrayList<>();
-        orderService.findAll().forEach(order -> orderResourceList.add(new OrderResource(order)));
+        if (id.isEmpty()) {
+            orderService.findAll().forEach(order -> orderResourceList.add(new OrderResource(order)));
+        } else {
+            Optional<Person> person = personService.findById(id.orElse(0L));
+            if (person.isPresent()) {
+                orderService.findAllByPerson(person.orElse(new Person()))
+                        .forEach(order -> orderResourceList.add(new OrderResource(order)));
+            } else {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+        }
         if (orderResourceList.size() > 0) {
             return new ResponseEntity<>(orderResourceList, HttpStatus.OK);
         } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
     }
 
     @PostMapping(value = "/create", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
     public ResponseEntity<?> createOrder(@RequestParam(name = "personId") Optional<Long> id, @RequestBody OrderResource orderResource) {
         Person person = personService.findById(id.orElse(0L)).orElse(new Person());
-        if (person.getId() == null ) {
+        if (person.getId() == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         Order order = Order.builder()
