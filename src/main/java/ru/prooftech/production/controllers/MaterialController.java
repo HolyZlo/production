@@ -1,6 +1,7 @@
 package ru.prooftech.production.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -30,6 +31,21 @@ public class MaterialController {
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteMaterialById(@PathVariable Long id) {
+        return materialService.deleteById(id) ? new ResponseEntity<>(HttpStatus.NO_CONTENT) : new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+
+    @PutMapping(value = "/{id}", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> updateMaterialById(@PathVariable Long id, @RequestBody MaterialResource materialResource) {
+        Material material = materialService.findById(id).orElse(new Material());
+        if (material.getId() == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } else {
+            return new ResponseEntity<>(materialService.save(material.updateFromMaterialResource(materialResource)), HttpStatus.OK);
+        }
+    }
+
     @GetMapping("/")
     public ResponseEntity<?> getAllMaterials() {
         List<MaterialResource> materialResourceList = new ArrayList<>();
@@ -41,7 +57,6 @@ public class MaterialController {
         }
     }
 
-
     @PostMapping(value = "/create", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
     public ResponseEntity<?> createMaterial(@RequestBody MaterialResource materialResource) {
         Material material = Material.builder()
@@ -49,7 +64,6 @@ public class MaterialController {
                 .materialName(materialResource.getMaterialName())
                 .materialQuantity(materialResource.getMaterialQuantity())
                 .build();
-        materialService.save(material);
-        return new ResponseEntity<>(getMaterialById(material.getId()).getBody(), HttpStatus.CREATED);
+        return new ResponseEntity<>(new MaterialResource(materialService.save(material)), HttpStatus.CREATED);
     }
 }

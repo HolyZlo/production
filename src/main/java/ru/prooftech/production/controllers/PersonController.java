@@ -72,17 +72,17 @@ public class PersonController {
         return new ResponseEntity<>(getPersonById(person.getId()).getBody(), HttpStatus.CREATED);
     }
 
-    // persons/{id}/orders/create
     @PostMapping(value = "/{id}/orders/create", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
     public ResponseEntity<?> createOrder(@PathVariable Optional<Long> id, @RequestBody OrderResource orderResource) {
         return orderController.createOrder(id, orderResource);
     }
     @GetMapping("/{id}/orders")
     public ResponseEntity<?> getOrdersByIdPerson(@PathVariable Long id) {
-        return     personService.findById(id)
-                .map(person -> ResponseEntity.ok(new PersonResource(person)))
-                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
-
+        return orderController.getOrders(Optional.of(id));
+    }
+    @GetMapping("/{id}/orders/{idOrder}")
+    public ResponseEntity<?> getOrdersByIdPersonAndIdOrder(@PathVariable Long id,@PathVariable Long idOrder) {
+        return orderController.getOrderById(id);
     }
 
 }

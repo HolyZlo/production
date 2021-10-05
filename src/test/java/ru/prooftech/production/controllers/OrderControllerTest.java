@@ -35,18 +35,18 @@ public class OrderControllerTest {
     @Autowired
     private ProductRepository productRepository;
 
-    @Test
-    public void testGetOrders() throws Exception {
-        Order order = Order.builder().orderName("Test1").build();
-        orderRepository.save(order);
-
-        ResultActions resultActions = mockMvc.perform(get("/orders/{id}", order.getId())).andDo(print());
-
-        resultActions.andExpect(status().isOk())
-                .andExpect(jsonPath("nameOrder", is("Test1")));
-
-        resultActions.andDo(MockMvcRestDocumentation.document("{class-name}/{method-name}"));
-    }
+//    @Test
+//    public void testGetOrders() throws Exception {
+//        Order order = Order.builder().orderName("Test1").build();
+//        orderRepository.save(order);
+//
+//        ResultActions resultActions = mockMvc.perform(get("/orders/{id}", order.getId())).andDo(print());
+//
+//        resultActions.andExpect(status().isOk())
+//                .andExpect(jsonPath("nameOrder", is("Test1")));
+//
+//        resultActions.andDo(MockMvcRestDocumentation.document("{class-name}/{method-name}"));
+//    }
 
 
 }

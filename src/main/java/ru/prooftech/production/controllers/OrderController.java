@@ -1,6 +1,7 @@
 package ru.prooftech.production.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpMessage;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -40,13 +41,34 @@ public class OrderController {
         this.productService = productService;
     }
 
-
     @GetMapping("/{id}")
     public ResponseEntity<?> getOrderById(@PathVariable Long id) {
         return orderService.findById(id)
                 .map(order -> ResponseEntity.ok(new OrderResource(order)))
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteOrderById(@PathVariable Long id) {
+        return orderService.deleteById(id) ? new ResponseEntity<>(HttpStatus.NO_CONTENT) : new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+
+    @PostMapping(value = "/create", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> createOrder(@RequestParam(name = "personId") Optional<Long> id, @RequestBody OrderResource orderResource) {
+        Person person = personService.findById(id.orElse(0L)).orElse(new Person());
+        if (person.getId() == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        Order order = Order.builder()
+                .createdOn(new Timestamp(System.currentTimeMillis()))
+                .person(person)
+                .build();
+        orderService.save(order);
+        order.setOrderName("Заказ №" + order.getId() + ",для клиента - " + order.getPerson().getSurname() + " от " + order.getCreatedOn());
+        orderService.save(order);
+        return new ResponseEntity<>(getOrderById(order.getId()).getBody(), HttpStatus.CREATED);
+    }
+
 
     @GetMapping("/")
     public ResponseEntity<?> getOrders(@RequestParam(required = false, name = "personId") Optional<Long> id) {
@@ -67,22 +89,6 @@ public class OrderController {
         } else {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
-    }
-
-    @PostMapping(value = "/create", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> createOrder(@RequestParam(name = "personId") Optional<Long> id, @RequestBody OrderResource orderResource) {
-        Person person = personService.findById(id.orElse(0L)).orElse(new Person());
-        if (person.getId() == null) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-        Order order = Order.builder()
-                .createdOn(new Timestamp(System.currentTimeMillis()))
-                .person(person)
-                .build();
-        orderService.save(order);
-        order.setOrderName("Заказ №" + order.getId() + ",для клиента - " + order.getPerson().getSurname() + " от " + order.getCreatedOn());
-        orderService.save(order);
-        return new ResponseEntity<>(getOrderById(order.getId()).getBody(), HttpStatus.CREATED);
     }
 
 

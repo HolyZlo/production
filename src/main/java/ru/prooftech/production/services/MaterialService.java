@@ -33,4 +33,8 @@ public class MaterialService {
         return materialRepository.findAll();
     }
 
+    public boolean deleteById(Long id) {
+        materialRepository.deleteById(id);
+        return findById(id).isEmpty();
+    }
 }

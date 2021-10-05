@@ -33,13 +33,6 @@ public class ProductController {
         this.productService = productService;
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<?> getProductById(@PathVariable Long id) {
-        return productService.findById(id)
-                .map(product -> ResponseEntity.ok(new ProductResource(product)))
-                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
-    }
-
     @GetMapping("/")
     public ResponseEntity<?> getProducts() {
         List<ProductResource> productResourceList = new ArrayList<>();
@@ -51,6 +44,14 @@ public class ProductController {
         }
 
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getProductById(@PathVariable Long id) {
+        return productService.findById(id)
+                .map(product -> ResponseEntity.ok(new ProductResource(product)))
+                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
+
 
     @PostMapping(value = "/create", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
     public ResponseEntity<?> createProduct(@RequestBody ProductResource productResource) {

@@ -31,7 +31,7 @@ public class ProductResource extends RepresentationModel<ProductResource> {
         this.productQuantity = product.getProductQuantity();
         this.productPrice = product.getProductPrice();
 
-
+        add(linkTo(methodOn(ProductController.class).getProducts()).withRel("root"));
         add(linkTo(methodOn(ProductController.class).getProductById(product.getId())).withSelfRel());
         add(linkTo(methodOn(ProductController.class).getComposition(product.getId())).withRel("composition"));
         // Добавить order

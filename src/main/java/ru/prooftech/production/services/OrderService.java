@@ -37,4 +37,8 @@ public class OrderService {
     public  List<Order> findAllByPerson(Person person){
         return orderRepository.findAllByPerson(person);
     }
+    public boolean deleteById(Long id){
+        orderRepository.deleteById(id);
+       return findById(id).isEmpty();
+    }
 }
