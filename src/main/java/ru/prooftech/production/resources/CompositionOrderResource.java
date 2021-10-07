@@ -6,10 +6,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.hateoas.RepresentationModel;
 import org.springframework.hateoas.server.core.Relation;
 import ru.prooftech.production.controllers.OrderController;
-import ru.prooftech.production.controllers.ProductController;
 import ru.prooftech.production.entities.CompositionOrder;
-import ru.prooftech.production.entities.Order;
-import ru.prooftech.production.entities.Person;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
@@ -18,6 +15,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @AllArgsConstructor
 @Getter
 @Relation(value = "compositionOrder", collectionRelation = "compositionOrder")
+//@Schema(description = "Состав заказа")
 public class CompositionOrderResource extends RepresentationModel<CompositionOrderResource> {
     private Long idCompositionOrder;
     private double priceComposition;

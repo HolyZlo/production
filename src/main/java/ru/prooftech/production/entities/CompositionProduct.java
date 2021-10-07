@@ -1,10 +1,11 @@
 package ru.prooftech.production.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import io.swagger.v3.oas.annotations.Hidden;
 import lombok.*;
 import org.springframework.hateoas.RepresentationModel;
 
 import javax.persistence.*;
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter

@@ -1,5 +1,6 @@
 package ru.prooftech.production.resources;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,10 +16,12 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @AllArgsConstructor
 @Getter
 @Relation(value = "compositionProduct", collectionRelation = "compositionProduct")
+@Schema(name = "CompositionProduct",description = "Состав продукта")
 public class CompositionProductResource extends RepresentationModel<CompositionProductResource> {
     private Long idCompositionProduct;
     private int countMaterial;
     private String materialName;
+    @Schema(hidden = true)
     private Long idMaterial;
 
     public CompositionProductResource(CompositionProduct compositionProduct) {

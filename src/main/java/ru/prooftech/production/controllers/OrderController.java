@@ -1,10 +1,11 @@
 package ru.prooftech.production.controllers;
 
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpMessage;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.prooftech.production.configuration.SpringFoxConfig;
 import ru.prooftech.production.entities.Order;
 import ru.prooftech.production.entities.Person;
 import ru.prooftech.production.resources.OrderResource;
@@ -21,6 +22,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RestController
 @RequestMapping("/orders")
+@Api(tags = {SpringFoxConfig.ORDER_TAG})
 public class OrderController {
     private OrderService orderService;
     private ProductService productService;

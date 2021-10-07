@@ -1,9 +1,11 @@
 package ru.prooftech.production.controllers;
 
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.prooftech.production.configuration.SpringFoxConfig;
 import ru.prooftech.production.entities.Order;
 import ru.prooftech.production.entities.Person;
 import ru.prooftech.production.resources.OrderResource;
@@ -20,6 +22,8 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RestController
 @RequestMapping("/persons")
+@Api(tags = {SpringFoxConfig.PERSON_TAG})
+
 public class PersonController {
     private PersonService personService;
     private OrderService orderService;
@@ -76,12 +80,14 @@ public class PersonController {
     public ResponseEntity<?> createOrder(@PathVariable Optional<Long> id, @RequestBody OrderResource orderResource) {
         return orderController.createOrder(id, orderResource);
     }
+
     @GetMapping("/{id}/orders")
     public ResponseEntity<?> getOrdersByIdPerson(@PathVariable Long id) {
         return orderController.getOrders(Optional.of(id));
     }
+
     @GetMapping("/{id}/orders/{idOrder}")
-    public ResponseEntity<?> getOrdersByIdPersonAndIdOrder(@PathVariable Long id,@PathVariable Long idOrder) {
+    public ResponseEntity<?> getOrdersByIdPersonAndIdOrder(@PathVariable Long id, @PathVariable Long idOrder) {
         return orderController.getOrderById(id);
     }
 

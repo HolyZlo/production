@@ -1,5 +1,7 @@
 package ru.prooftech.production.resources;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,8 +19,9 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @AllArgsConstructor
 @Getter
 @Relation(value = "material", collectionRelation = "material")
+@ApiModel(description = "Материал",value = "MaterialRes")
 public class MaterialResource extends RepresentationModel<MaterialResource> {
-
+   @ApiModelProperty(hidden = true)
     private long idMaterial;
     @NotNull(message = "Material name cannot be null")
     private String materialName;

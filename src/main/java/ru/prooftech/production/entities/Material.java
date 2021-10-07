@@ -21,6 +21,7 @@ public class Material extends RepresentationModel<Material> {
     private Long id;
     @Column(name = "name")
     private String materialName;
+
     @Column(name = "price")
     private int materialPrice;
     @Column(name = "quantity")

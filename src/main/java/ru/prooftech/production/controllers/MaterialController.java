@@ -1,14 +1,13 @@
 package ru.prooftech.production.controllers;
 
-
-
 import io.swagger.annotations.Api;
 import io.swagger.v3.oas.annotations.Operation;
-
+import io.swagger.v3.oas.annotations.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.prooftech.production.configuration.SpringFoxConfig;
 import ru.prooftech.production.entities.Material;
 import ru.prooftech.production.resources.MaterialResource;
 import ru.prooftech.production.services.MaterialService;
@@ -21,7 +20,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RestController
 @RequestMapping("/materials")
-@Api(tags = {"material"},value = "Material countrolllerr")
+@Api(tags = {SpringFoxConfig.MATERIAL_TAG})
 public class MaterialController {
     private MaterialService materialService;
 
@@ -30,21 +29,24 @@ public class MaterialController {
         this.materialService = materialService;
     }
 
-    @Operation(summary = "Получение материала", description = "Получение материала по id")
+    @Operation(summary = "Получение материала", description = "Получение материала по идентификатору id")
     @GetMapping("/{id}")
-    public ResponseEntity<?> getMaterialById(@PathVariable Long id) {
+    public ResponseEntity<?> getMaterialById(@PathVariable @Parameter(description = "Идентификатор пользователя") Long id) {
         return materialService.findById(id)
                 .map(material -> ResponseEntity.ok(new MaterialResource(material)))
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
+    @Operation(summary = "Удаление материала", description = "Удаление материала по идентификатору id")
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteMaterialById(@PathVariable Long id) {
+    public ResponseEntity<?> deleteMaterialById(@PathVariable @Parameter(description = "Идентификатор пользователя") Long id) {
         return materialService.deleteById(id) ? new ResponseEntity<>(HttpStatus.NO_CONTENT) : new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
+    @Operation(summary = "Обновление материала", description = "Обновление материала по идентификатору id")
     @PutMapping(value = "/{id}", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> updateMaterialById(@PathVariable Long id, @RequestBody MaterialResource materialResource) {
+    public ResponseEntity<?> updateMaterialById(@PathVariable @Parameter(description = "Идентификатор пользователя") Long id,
+                                                @RequestBody MaterialResource materialResource) {
         Material material = materialService.findById(id).orElse(new Material());
         if (material.getId() == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -54,6 +56,7 @@ public class MaterialController {
     }
 
     @GetMapping("/")
+    @Operation(summary = "Получение списка материалов", description = "Получение списка всех имеющихся материалов")
     public ResponseEntity<?> getAllMaterials() {
         List<MaterialResource> materialResourceList = new ArrayList<>();
         materialService.findAll().forEach(material -> materialResourceList.add(new MaterialResource(material)));
@@ -64,8 +67,11 @@ public class MaterialController {
         }
     }
 
+    @Operation(summary = "Добавление материала", description = "Добавление нового материала")
     @PostMapping(value = "/create", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> createMaterial(@RequestBody MaterialResource materialResource) {
+    public ResponseEntity<?> createMaterial(@RequestBody
+                                            @Parameter(description = "JSON Материал", name = "material", required = true)
+                                                    MaterialResource materialResource) {
         Material material = Material.builder()
                 .materialPrice(materialResource.getMaterialPrice())
                 .materialName(materialResource.getMaterialName())

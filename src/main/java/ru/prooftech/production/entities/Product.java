@@ -3,6 +3,7 @@ package ru.prooftech.production.entities;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.springframework.hateoas.RepresentationModel;
+import ru.prooftech.production.resources.ProductResource;
 
 import javax.persistence.*;
 import java.util.List;
@@ -37,4 +38,11 @@ public class Product extends RepresentationModel<Product> {
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<CompositionProduct> composition;
 
+    public Product updateFromProductResource(ProductResource productResource) {
+        this.setProductName(productResource.getProductName());
+        this.setProductPrice(productResource.getProductPrice());
+        this.setProductQuantity(productResource.getProductQuantity());
+        this.setProductDescription(productResource.getProductDescription());
+        return this;
+    }
 }
