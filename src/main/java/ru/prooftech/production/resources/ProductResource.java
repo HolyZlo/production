@@ -17,6 +17,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @AllArgsConstructor
 @Getter
 @Relation(value = "product", collectionRelation = "products")
+
 public class ProductResource extends RepresentationModel<ProductResource> {
     private Long idProduct;
     private String productName;

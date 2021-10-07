@@ -1,7 +1,11 @@
 package ru.prooftech.production.controllers;
 
+
+
+import io.swagger.annotations.Api;
+import io.swagger.v3.oas.annotations.Operation;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,8 +18,10 @@ import java.util.List;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
+
 @RestController
 @RequestMapping("/materials")
+@Api(tags = {"material"},value = "Material countrolllerr")
 public class MaterialController {
     private MaterialService materialService;
 
@@ -24,6 +30,7 @@ public class MaterialController {
         this.materialService = materialService;
     }
 
+    @Operation(summary = "Получение материала", description = "Получение материала по id")
     @GetMapping("/{id}")
     public ResponseEntity<?> getMaterialById(@PathVariable Long id) {
         return materialService.findById(id)

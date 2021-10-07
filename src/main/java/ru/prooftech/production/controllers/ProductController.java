@@ -33,6 +33,7 @@ public class ProductController {
         this.productService = productService;
     }
 
+
     @GetMapping("/")
     public ResponseEntity<?> getProducts() {
         List<ProductResource> productResourceList = new ArrayList<>();

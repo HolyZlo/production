@@ -6,10 +6,9 @@ import lombok.NoArgsConstructor;
 import org.springframework.hateoas.RepresentationModel;
 import org.springframework.hateoas.server.core.Relation;
 import ru.prooftech.production.controllers.MaterialController;
-import ru.prooftech.production.controllers.ProductController;
 import ru.prooftech.production.entities.Material;
 
-import javax.persistence.Column;
+import javax.validation.constraints.NotNull;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
@@ -21,8 +20,11 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 public class MaterialResource extends RepresentationModel<MaterialResource> {
 
     private long idMaterial;
+    @NotNull(message = "Material name cannot be null")
     private String materialName;
+    @NotNull(message = "Material price cannot be null")
     private int materialPrice;
+    @NotNull(message = "Quantity material  cannot be null")
     private long materialQuantity;
 
     public MaterialResource(Material material) {
