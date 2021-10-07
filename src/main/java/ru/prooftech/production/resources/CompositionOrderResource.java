@@ -1,5 +1,6 @@
 package ru.prooftech.production.resources;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,7 +16,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @AllArgsConstructor
 @Getter
 @Relation(value = "compositionOrder", collectionRelation = "compositionOrder")
-//@Schema(description = "Состав заказа")
+@Schema(description = "Состав заказа")
 public class CompositionOrderResource extends RepresentationModel<CompositionOrderResource> {
     private Long idCompositionOrder;
     private double priceComposition;

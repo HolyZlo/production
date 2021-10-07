@@ -1,6 +1,7 @@
 package ru.prooftech.production.controllers;
 
 import io.swagger.annotations.Api;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,11 +20,11 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+import static ru.prooftech.production.configuration.SpringFoxConfig.PERSON_TAG;
 
 @RestController
 @RequestMapping("/persons")
-@Api(tags = {SpringFoxConfig.PERSON_TAG})
-
+@Tag(name = PERSON_TAG,description = "Клиенты")
 public class PersonController {
     private PersonService personService;
     private OrderService orderService;
@@ -78,7 +79,8 @@ public class PersonController {
 
     @PostMapping(value = "/{id}/orders/create", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
     public ResponseEntity<?> createOrder(@PathVariable Optional<Long> id, @RequestBody OrderResource orderResource) {
-        return orderController.createOrder(id, orderResource);
+        return orderController.createOrder(id);
+        //, orderResource
     }
 
     @GetMapping("/{id}/orders")

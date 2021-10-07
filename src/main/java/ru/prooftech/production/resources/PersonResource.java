@@ -1,5 +1,6 @@
 package ru.prooftech.production.resources;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 import org.springframework.hateoas.RepresentationModel;
 import org.springframework.hateoas.server.core.Relation;
@@ -19,6 +20,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @AllArgsConstructor
 @Getter
 @Relation(value = "person", collectionRelation = "persons")
+@Schema(name = "PersonResource", description = "Сущность Клиент")
 public class PersonResource extends RepresentationModel<PersonResource> {
     private Long idPerson;
 

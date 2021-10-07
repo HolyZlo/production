@@ -1,18 +1,16 @@
 package ru.prooftech.production.controllers;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.prooftech.production.configuration.SpringFoxConfig;
 import ru.prooftech.production.entities.CompositionProduct;
 import ru.prooftech.production.entities.Material;
 import ru.prooftech.production.entities.Product;
 import ru.prooftech.production.resources.CompositionProductResource;
-import ru.prooftech.production.resources.MaterialResource;
 import ru.prooftech.production.resources.ProductResource;
 import ru.prooftech.production.services.MaterialService;
 import ru.prooftech.production.services.ProductService;
@@ -21,11 +19,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+import static ru.prooftech.production.configuration.SpringFoxConfig.PRODUCT_TAG;
 
 @RestController
 @RequestMapping("/products")
-@Api(tags = {SpringFoxConfig.PRODUCT_TAG})
+@Tag(name = PRODUCT_TAG, description = "Продукты производимые компанией")
 public class ProductController {
+
     private ProductService productService;
     private MaterialService materialService;
 
@@ -39,7 +39,7 @@ public class ProductController {
         this.productService = productService;
     }
 
-    @ApiOperation(value = "get all products")
+    @Operation(summary = "Получить все продукты", description = "Получить список всех продуктов JSON", tags = {PRODUCT_TAG})
     @GetMapping("/")
     public ResponseEntity<?> getProducts() {
         List<ProductResource> productResourceList = new ArrayList<>();
@@ -52,16 +52,22 @@ public class ProductController {
 
     }
 
+    @Operation(summary = "Получить продукт", description = "Получить продукт по ключу id, возврат JSON", tags = {PRODUCT_TAG})
     @GetMapping("/{id}")
-    public ResponseEntity<?> getProductById(@PathVariable Long id) {
+    public ResponseEntity<?> getProductById(@PathVariable
+                                            @Parameter(description = "Идентификатор продукта", required = true) Long id) {
         return productService.findById(id)
                 .map(product -> ResponseEntity.ok(new ProductResource(product)))
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    @ApiOperation(value = "Обновить продукт по ключу id")
+    @Operation(summary = "Обновить продукт", description = "Обновить продукт по ключу id", tags = {PRODUCT_TAG})
     @PutMapping(value = "/{id}", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> updateProductById(@PathVariable Long id, @RequestBody ProductResource productResource) {
+    public ResponseEntity<?> updateProductById(@PathVariable
+                                               @Parameter(description = "Идентификатор продукта",required = true) Long id,
+                                               @RequestBody
+                                               @Parameter(description = "JSON продукта",required = true)
+                                                       ProductResource productResource) {
         Product product = productService.findById(id).orElse(new Product());
         if (product.getId() == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);

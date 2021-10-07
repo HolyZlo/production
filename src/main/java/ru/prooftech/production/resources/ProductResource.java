@@ -1,5 +1,6 @@
 package ru.prooftech.production.resources;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,10 +18,13 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @AllArgsConstructor
 @Getter
 @Relation(value = "product", collectionRelation = "products")
-
+@Schema(name = "ProductResource")
 public class ProductResource extends RepresentationModel<ProductResource> {
+    @Schema(hidden = true)
     private Long idProduct;
+    @Schema(description = "Название продукта",required = true,example = "Мыло Dove, с ароматом ванили")
     private String productName;
+    @Schema(description = "Описание продукта",required = true,example = "Мыло Dave, с ароматом ванили")
     private String productDescription;
     private int productQuantity;
     private double productPrice;
