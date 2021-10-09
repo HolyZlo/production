@@ -29,11 +29,13 @@ public class Product extends RepresentationModel<Product> {
     private String productDescription;
 
     @Column(name = "quantity")
-
     private int productQuantity;
-    @Column(name = "price")
 
+    @Column(name = "price")
     private double productPrice;
+
+    @Column(name = "weight")
+    private int weight;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<CompositionProduct> composition;
@@ -43,6 +45,18 @@ public class Product extends RepresentationModel<Product> {
         this.setProductPrice(productResource.getProductPrice());
         this.setProductQuantity(productResource.getProductQuantity());
         this.setProductDescription(productResource.getProductDescription());
+        this.setWeight(productResource.getWeight());
         return this;
     }
+
+    public static Product createFromProductResource(ProductResource productResource) {
+        return Product.builder()
+                .productName(productResource.getProductName())
+                .productDescription(productResource.getProductDescription())
+                .productQuantity(productResource.getProductQuantity())
+                .weight(productResource.getWeight())
+                .productPrice(productResource.getProductPrice())
+                .build();
+    }
+
 }

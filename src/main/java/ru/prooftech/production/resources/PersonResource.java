@@ -4,14 +4,9 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 import org.springframework.hateoas.RepresentationModel;
 import org.springframework.hateoas.server.core.Relation;
+import ru.prooftech.production.controllers.OrderController;
 import ru.prooftech.production.controllers.PersonController;
-import ru.prooftech.production.controllers.ProductController;
-import ru.prooftech.production.entities.Order;
 import ru.prooftech.production.entities.Person;
-
-import javax.persistence.Column;
-import javax.persistence.OneToMany;
-import java.util.List;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
@@ -20,12 +15,12 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @AllArgsConstructor
 @Getter
 @Relation(value = "person", collectionRelation = "persons")
-@Schema(name = "PersonResource", description = "Сущность Клиент")
+@Schema(name = "Person", description = "Сущность Клиент")
 public class PersonResource extends RepresentationModel<PersonResource> {
     private Long idPerson;
 
 
-    private String namePerson;
+    private String personName;
     private String surname;
     private int age;
     private String phoneNumber;
@@ -33,14 +28,14 @@ public class PersonResource extends RepresentationModel<PersonResource> {
 
     public PersonResource(Person person) {
         this.idPerson = person.getId();
-        this.namePerson = person.getPersonName();
+        this.personName = person.getPersonName();
         this.surname = person.getSurname();
         this.age = person.getAge();
         this.phoneNumber = person.getPhoneNumber();
         this.balance = person.getBalance();
-
+        add(linkTo(methodOn(PersonController.class).getAllPersons()).withRel("parent"));
         add(linkTo(methodOn(PersonController.class).getPersonById(person.getId())).withSelfRel());
-
+        add(linkTo(methodOn(PersonController.class).getOrdersByIdPerson(person.getId())).withRel("orders"));
         // добавить order
     }
 }

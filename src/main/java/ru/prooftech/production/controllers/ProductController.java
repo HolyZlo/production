@@ -2,6 +2,7 @@ package ru.prooftech.production.controllers;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -64,9 +65,9 @@ public class ProductController {
     @Operation(summary = "Обновить продукт", description = "Обновить продукт по ключу id", tags = {PRODUCT_TAG})
     @PutMapping(value = "/{id}", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
     public ResponseEntity<?> updateProductById(@PathVariable
-                                               @Parameter(description = "Идентификатор продукта",required = true) Long id,
+                                               @Parameter(description = "Идентификатор продукта", required = true) Long id,
                                                @RequestBody
-                                               @Parameter(description = "JSON продукта",required = true)
+                                               @Parameter(description = "JSON продукта", required = true)
                                                        ProductResource productResource) {
         Product product = productService.findById(id).orElse(new Product());
         if (product.getId() == null) {
@@ -77,21 +78,21 @@ public class ProductController {
         }
     }
 
-
+    @Operation(summary = "Создать продукт", description = "Создать новый продукт", tags = {PRODUCT_TAG})
     @PostMapping(value = "/create", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> createProduct(@RequestBody ProductResource productResource) {
-        Product product = Product.builder()
-                .productPrice(productResource.getProductPrice())
-                .productName(productResource.getProductName())
-                .productDescription(productResource.getProductDescription())
-                .productQuantity(productResource.getProductQuantity())
-                .build();
-        productService.save(product);
-        return new ResponseEntity<>(getProductById(product.getId()).getBody(), HttpStatus.CREATED);
+    public ResponseEntity<?> createProduct(@RequestBody
+                                           @Parameter(description = "JSON продукта", required = true)
+                                                   ProductResource productResource) {
+        return new ResponseEntity<>(getProductById(productService
+                .save(Product.createFromProductResource(productResource))
+                .getId())
+                .getBody(), HttpStatus.CREATED);
     }
 
+    @Operation(summary = "Получить состав продукта", description = "Получить состав продукта по ключу", tags = {PRODUCT_TAG})
     @GetMapping(value = "/{id}/composition")
-    public ResponseEntity<?> getComposition(@PathVariable Long id) {
+    public ResponseEntity<?> getComposition(@PathVariable
+                                            @Parameter(description = "Ключ продукта - id", required = true) Long id) {
         Product product = productService.findById(id).orElse(new Product());
         if (product.getId() == null || product.getComposition().size() == 0) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -102,10 +103,17 @@ public class ProductController {
         return new ResponseEntity<>(compositionProductResources, HttpStatus.OK);
     }
 
+    @Operation(summary = "Добавить материалы в состав продукта",
+            description = "Добавить материалы в состав продукта по ключу, список материалов должен быть пуст",
+            tags = {PRODUCT_TAG})
     @PostMapping(value = "/{id}/composition", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> createComposition(@PathVariable Long id, @RequestBody List<CompositionProductResource> compositionProductList) {
+    public ResponseEntity<?> createComposition(@PathVariable
+                                               @Parameter(description = "Ключ продукта - id", required = true)
+                                                       Long id,
+                                               @RequestBody
+                                               @Parameter(description = "JSON Array материалов", required = true)
+                                                       List<CompositionProductResource> compositionProductList) {
         Product product = productService.findById(id).orElse(new Product());
-
         if (product.getId() == null || product.getComposition().size() > 0) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
@@ -117,4 +125,26 @@ public class ProductController {
         productService.save(product);
         return new ResponseEntity<>(getComposition(product.getId()).getBody(), HttpStatus.CREATED);
     }
+
+    @Operation(summary = "Добавить материалы в состав продукта", description = "Добавить материалы в состав продукта по ключу", tags = {PRODUCT_TAG})
+    @PutMapping(value = "/{id}/composition", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> updateComposition(@PathVariable
+                                               @Parameter(description = "Ключ продукта - id", required = true)
+                                                       Long id,
+                                               @RequestBody
+                                               @Parameter(description = "JSON Array материалов", required = true)
+                                                       List<CompositionProductResource> compositionProductList) {
+        Product product = productService.findById(id).orElse(new Product());
+        if (product.getId() == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        compositionProductList.forEach(compositionProductResource -> product.getComposition().add(CompositionProduct.builder()
+                .countMaterial(compositionProductResource.getCountMaterial())
+                .material(materialService.findById(compositionProductResource.getIdMaterial()).orElse(new Material()))
+                .product(product)
+                .build()));
+        productService.save(product);
+        return new ResponseEntity<>(getComposition(product.getId()).getBody(), HttpStatus.OK);
+    }
+
 }

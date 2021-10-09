@@ -1,6 +1,7 @@
 package ru.prooftech.production.entities;
 
 import io.swagger.v3.oas.annotations.Hidden;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 import org.springframework.hateoas.RepresentationModel;
 
@@ -12,6 +13,7 @@ import javax.persistence.*;
 @Setter
 @Builder
 @Entity(name = "product_compositions")
+@Schema(name = "CompositionProductEntity",description = "Сушность \"состав продукта\"")
 public class CompositionProduct extends RepresentationModel<CompositionProduct> {
     @Id
     @GeneratedValue

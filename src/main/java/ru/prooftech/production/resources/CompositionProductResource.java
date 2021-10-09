@@ -18,10 +18,17 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @Relation(value = "compositionProduct", collectionRelation = "compositionProduct")
 @Schema(name = "CompositionProduct",description = "Состав продукта")
 public class CompositionProductResource extends RepresentationModel<CompositionProductResource> {
+
+    @Schema(description = "Идентификатор состава продукта",example = "125")
     private Long idCompositionProduct;
+
+    @Schema(required = true,description = "Количество материала",example = "85")
     private int countMaterial;
+
+    @Schema(description = "Имя материала",example = "мясо и продукты переработки мяса")
     private String materialName;
-    @Schema(hidden = true)
+
+    @Schema(required = true,description = "Ключ материала",example = "1")
     private Long idMaterial;
 
     public CompositionProductResource(CompositionProduct compositionProduct) {

@@ -18,15 +18,20 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @AllArgsConstructor
 @Getter
 @Relation(value = "material", collectionRelation = "material")
-@Schema(description = "Материал", name = "MaterialResource")
+@Schema(description = "Материал", name = "Material")
 public class MaterialResource extends RepresentationModel<MaterialResource> {
-    @Schema(hidden = true)
+    @Schema(accessMode = Schema.AccessMode.READ_ONLY, description = "Ключ материала",example = "15")
     private long idMaterial;
-    @NotNull(message = "Material name cannot be null")
+
+    @Schema(required = true,description = "Название материала",example = "мясо и продукты переработки мяса")
+    @NotNull(message = "Название материала не может быть null")
     private String materialName;
-    @NotNull(message = "Material price cannot be null")
+
+    @NotNull(message = "Цена материала не может быть null")
+    @Schema(required = true,description = "Стоимость материала",example = "85")
     private int materialPrice;
-    @NotNull(message = "Quantity material  cannot be null")
+
+    @Schema(description = "Остаток материала",example = "1000")
     private long materialQuantity;
 
     public MaterialResource(Material material) {
@@ -34,6 +39,7 @@ public class MaterialResource extends RepresentationModel<MaterialResource> {
         this.materialName = material.getMaterialName();
         this.materialPrice = material.getMaterialPrice();
         this.materialQuantity = material.getMaterialQuantity();
+        add(linkTo(methodOn(MaterialController.class).getAllMaterials()).withRel("parent"));
         add(linkTo(methodOn(MaterialController.class).getMaterialById(material.getId())).withSelfRel());
     }
 }

@@ -19,11 +19,13 @@ public class Material extends RepresentationModel<Material> {
     @GeneratedValue
     @Column(name = "id")
     private Long id;
+
     @Column(name = "name")
     private String materialName;
 
     @Column(name = "price")
     private int materialPrice;
+
     @Column(name = "quantity")
     private long materialQuantity;
 

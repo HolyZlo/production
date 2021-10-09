@@ -1,7 +1,9 @@
 package ru.prooftech.production.entities;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 import org.springframework.hateoas.RepresentationModel;
+import ru.prooftech.production.resources.PersonResource;
 
 import javax.persistence.*;
 import java.util.List;
@@ -13,7 +15,8 @@ import java.util.List;
 @Setter
 @Builder
 @Entity(name = "persons")
-public class Person  extends RepresentationModel<Person> {
+@Schema(name = "PersonEntity", description = "Внутренняя сушность клиента")
+public class Person extends RepresentationModel<Person> {
     @Id
     @GeneratedValue
     @Column(name = "id")
@@ -33,4 +36,15 @@ public class Person  extends RepresentationModel<Person> {
 
     @OneToMany
     private List<Order> listOrders;
+
+
+    public static Person createPersonFromPersonResource(PersonResource personResource) {
+        return Person.builder()
+                .personName(personResource.getPersonName())
+                .surname(personResource.getSurname())
+                .phoneNumber(personResource.getPhoneNumber())
+                .balance(personResource.getBalance())
+                .age(personResource.getAge())
+                .build();
+    }
 }

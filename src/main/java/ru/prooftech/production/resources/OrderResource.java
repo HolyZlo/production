@@ -1,5 +1,6 @@
 package ru.prooftech.production.resources;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -7,7 +8,6 @@ import org.springframework.hateoas.RepresentationModel;
 import org.springframework.hateoas.server.core.Relation;
 import ru.prooftech.production.controllers.OrderController;
 import ru.prooftech.production.controllers.PersonController;
-import ru.prooftech.production.controllers.ProductController;
 import ru.prooftech.production.entities.CompositionOrder;
 import ru.prooftech.production.entities.Order;
 
@@ -23,6 +23,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @AllArgsConstructor
 @Getter
 @Relation(value = "order", collectionRelation = "orders")
+@Schema(name = "OrderResource", description = "Сущность заказа")
 public class OrderResource extends RepresentationModel<Order> {
     private Long id;
     private String orderName;
@@ -43,6 +44,7 @@ public class OrderResource extends RepresentationModel<Order> {
         this.inTotal = order.getInTotal();
         this.idPerson = order.getPerson().getId();
         this.surname = order.getPerson().getSurname();
+        add(linkTo(methodOn(OrderController.class).getAllOrders(order.getPerson().getId())).withRel("root"));
         add(linkTo(methodOn(OrderController.class).getOrderById(order.getId())).withSelfRel());
         add(linkTo(methodOn(PersonController.class).getPersonById(order.getPerson().getId())).withRel("persons"));
     }

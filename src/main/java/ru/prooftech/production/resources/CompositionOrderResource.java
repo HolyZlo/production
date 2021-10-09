@@ -16,11 +16,24 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @AllArgsConstructor
 @Getter
 @Relation(value = "compositionOrder", collectionRelation = "compositionOrder")
-@Schema(description = "Состав заказа")
+@Schema(name = "CompositionOrder", description = "Состав продукта")
 public class CompositionOrderResource extends RepresentationModel<CompositionOrderResource> {
+
+    @Schema(description = "Идентификатор состава продуктов", example = "10")
     private Long idCompositionOrder;
+
+    @Schema(description = "Стоимость продуктов", example = "2560.0")
     private double priceComposition;
+
+    @Schema(description = "Ключ продукта", example = "15", required = true)
+    private Long productId;
+
+    @Schema(description = "Количество продукта в заказе", example = "100", required = true)
     private int countProduct;
+
+    @Schema(description = "Наименование продукта",
+            example = "Влажный корм Pro Plan® для взрослых кошек с чувствительным пищеварением или " +
+                    "особыми предпочтениями в еде, с высоким содержанием индейки")
     private String productName;
 
     public CompositionOrderResource(CompositionOrder compositionOrder) {
@@ -28,7 +41,7 @@ public class CompositionOrderResource extends RepresentationModel<CompositionOrd
         this.priceComposition = compositionOrder.getPriceComposition();
         this.countProduct = compositionOrder.getCountProduct();
         this.productName = compositionOrder.getProduct().getProductName();
-
+        this.productId = compositionOrder.getProduct().getId();
         add(linkTo(methodOn(OrderController.class).getOrderById(compositionOrder.getOrder().getId())).withSelfRel());
 //        add(linkTo(methodOn(OrderController.class).getOrderById(compositionOrder.getOrder().getId())).withSelfRel());
 

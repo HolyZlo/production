@@ -1,30 +1,30 @@
 package ru.prooftech.production.controllers;
 
-import io.swagger.annotations.Api;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.prooftech.production.configuration.SpringFoxConfig;
-import ru.prooftech.production.entities.Order;
+import org.springframework.web.server.ResponseStatusException;
+import ru.prooftech.production.entities.Material;
 import ru.prooftech.production.entities.Person;
-import ru.prooftech.production.resources.OrderResource;
+import ru.prooftech.production.resources.MaterialResource;
 import ru.prooftech.production.resources.PersonResource;
 import ru.prooftech.production.services.OrderService;
 import ru.prooftech.production.services.PersonService;
 
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+import static ru.prooftech.production.configuration.SpringFoxConfig.ORDER_TAG;
 import static ru.prooftech.production.configuration.SpringFoxConfig.PERSON_TAG;
 
 @RestController
 @RequestMapping("/persons")
-@Tag(name = PERSON_TAG,description = "Клиенты")
+@Tag(name = PERSON_TAG, description = "Клиенты")
 public class PersonController {
     private PersonService personService;
     private OrderService orderService;
@@ -45,52 +45,67 @@ public class PersonController {
         this.orderService = orderService;
     }
 
+    @Operation(summary = "Получить клиента", description = "Получить клиента по идентификатору id", tags = {PERSON_TAG})
     @GetMapping("/{id}")
-    public ResponseEntity<?> getPersonById(@PathVariable Long id) {
-        return personService.findById(id)
-                .map(person -> ResponseEntity.ok(new PersonResource(person)))
-                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    public ResponseEntity<?> getPersonById(@PathVariable
+                                           @Parameter(description = "Идентификатор клиента", required = true)
+                                                   Long id) {
+        Person person = personService.findById(id).orElse(new Person());
+        if (person.getId() == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Not found person by id - " +id);
+        }
+        return ResponseEntity.ok(new PersonResource(person));
     }
 
+
+    @Operation(summary = "Получить клиентов", description = "Получить список всех клиентов", tags = {PERSON_TAG})
     @GetMapping("/")
-    public ResponseEntity<?> getPersons() {
+    public ResponseEntity<?> getAllPersons() {
         List<PersonResource> personResourceList = new ArrayList<>();
         personService.findAll().forEach(person -> personResourceList.add(new PersonResource(person)));
+
         if (personResourceList.size() > 0) {
             return new ResponseEntity<>(personResourceList, HttpStatus.OK);
         } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Not found persons");
         }
-
     }
 
+    @Operation(summary = "Создать клиента", description = "Создать нового клиентов", tags = {PERSON_TAG})
     @PostMapping(value = "/create", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> createPerson(@RequestBody PersonResource personResource) {
-        Person person = Person.builder()
-                .personName(personResource.getNamePerson())
-                .surname(personResource.getSurname())
-                .age(personResource.getAge())
-                .balance(personResource.getBalance())
-                .phoneNumber(personResource.getPhoneNumber())
-                .build();
-        personService.save(person);
-        return new ResponseEntity<>(getPersonById(person.getId()).getBody(), HttpStatus.CREATED);
+    public ResponseEntity<?> createPerson(@RequestBody
+                                          @Parameter(description = "JSON клиента", required = true)
+                                                  PersonResource personResource) {
+
+        return new ResponseEntity<>(getPersonById(personService
+                .save(Person.createPersonFromPersonResource(personResource))
+                .getId()).getBody(), HttpStatus.CREATED);
     }
 
+    @Operation(summary = "Создать заказ для клиента", description = "Создать новый заказ для клиента", tags = {PERSON_TAG, ORDER_TAG})
     @PostMapping(value = "/{id}/orders/create", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> createOrder(@PathVariable Optional<Long> id, @RequestBody OrderResource orderResource) {
-        return orderController.createOrder(id);
-        //, orderResource
+    public ResponseEntity<?> createOrder(@PathVariable
+                                         @Parameter(description = "Идентификатор клиента", required = true)
+                                                 Long id) {
+        return orderController.createOrderByPersonId(id);
     }
 
+    @Operation(summary = "Получить заказы клиента", description = "Получить список всех заказов у клиента", tags = {PERSON_TAG, ORDER_TAG})
     @GetMapping("/{id}/orders")
-    public ResponseEntity<?> getOrdersByIdPerson(@PathVariable Long id) {
-        return orderController.getOrders(Optional.of(id));
+    public ResponseEntity<?> getOrdersByIdPerson(@PathVariable
+                                                 @Parameter(description = "Идентификатор клиента", required = true)
+                                                         Long id) {
+        return orderController.getAllOrders(id);
     }
 
+    @Operation(summary = "Получить заказ клиента", description = "Получить заказ у клиента по идентификатору клиента и заказа", tags = {PERSON_TAG, ORDER_TAG})
     @GetMapping("/{id}/orders/{idOrder}")
-    public ResponseEntity<?> getOrdersByIdPersonAndIdOrder(@PathVariable Long id, @PathVariable Long idOrder) {
-        return orderController.getOrderById(id);
+    public ResponseEntity<?> getOrdersByIdPersonAndIdOrder(@PathVariable
+                                                           @Parameter(description = "Идентификатор клиента", required = true)
+                                                                   Long id,
+                                                           @PathVariable
+                                                           @Parameter(description = "Идентификатор заказа", required = true)
+                                                                   Long idOrder) {
+        return orderController.getOrderById(idOrder);
     }
-
 }

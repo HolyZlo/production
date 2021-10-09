@@ -52,35 +52,59 @@ public class DataInit implements ApplicationRunner {
     public void run(ApplicationArguments args) {
 //-----------        Материалы
         Material material1 = Material.builder()
-                .materialName("Пластик PLA").materialPrice(500).materialQuantity(5000).build();
+                .materialName("мясо и продукты переработки мяса").materialPrice(100).materialQuantity(5000).build();
         Material material2 = Material.builder()
-                .materialName("Пластик PETG").materialPrice(300).materialQuantity(15000).build();
+                .materialName("рыба и продукты переработки рыбы").materialPrice(140).materialQuantity(5000).build();
         Material material3 = Material.builder()
-                .materialName("Дихлорметан").materialPrice(1000).materialQuantity(1000).build();
+                .materialName("масла и жиры").materialPrice(200).materialQuantity(3000).build();
+        Material material4 = Material.builder()
+                .materialName("продукты переработки растительного сырья").materialPrice(50).materialQuantity(2000).build();
         materialService.saveAll(List.of(material1, material2, material3));
+        Material material5 = Material.builder()
+                .materialName("сухой белок птицы").materialPrice(10).materialQuantity(4000).build();
+        materialService.saveAll(List.of(material1, material2, material3,material4,material5));
 //-----------        Продукты
         Product product1 = Product.builder()
-                .productName("Подставка для телефона")
-                .productDescription("Подставка для телефона из PLA пластика")
+                .productName("Влажный корм Pro Plan® для взрослых кошек с чувствительным пищеварением или особыми " +
+                        "предпочтениями в еде, с высоким содержанием индейки")
+                .productDescription("Корм консервированный полнорационный для взрослых кошек с чувствительным " +
+                        "пищеварением или особыми предпочтениями в еде, с высоким содержанием индейки")
+                .weight(85)
                 .productQuantity(150)
-                .productPrice(100.0)
+                .productPrice(83.0)
                 .build();
         Product product2 = Product.builder()
-                .productName("Зажим для пакетов")
-                .productDescription("Зажим для пакетов из PETG пластика")
-                .productQuantity(150)
-                .productPrice(20.0)
+                .productName("Влажный корм Pro Plan® для стерилизованных кошек и кастрированных котов, с" +
+                        " тунцом и лососем")
+                .productDescription("Корм консервированный полнорационный для стерилизованных кошек и " +
+                        "кастрированных котов, с тунцом и лососем, паштет")
+                .productQuantity(200)
+                .weight(85)
+                .productPrice(85.0)
                 .build();
+        Product product3 = Product.builder()
+                .productName("Сухой корм Pro Plan® для стерилизованных кошек и кастрированных котов, лосось")
+                .productDescription("Для поддержания здоровья стерилизованных кошек. PRO PLAN Sterilised сочетает все" +
+                        "основные питательные вещества, включая витамины A, C и E и жирные кислоты омега-3 и омега-6")
+                .productQuantity(200)
+                .weight(85)
+                .productPrice(85.0)
+                .build();
+        productService.saveAll(List.of(product1, product2,product3));
 
-        productService.saveAll(List.of(product1, product2));
         //-----------      Состав продуктов
-        CompositionProduct compositionProduct1 = CompositionProduct.builder().product(product1).material(material1).countMaterial(20).build();
-        CompositionProduct compositionProduct2 = CompositionProduct.builder().product(product1).material(material2).countMaterial(10).build();
-        CompositionProduct compositionProduct3 = CompositionProduct.builder().product(product1).material(material3).countMaterial(30).build();
-        CompositionProduct compositionProduct4 = CompositionProduct.builder().product(product2).material(material1).countMaterial(5).build();
-        CompositionProduct compositionProduct5 = CompositionProduct.builder().product(product2).material(material2).countMaterial(15).build();
-        CompositionProduct compositionProduct6 = CompositionProduct.builder().product(product2).material(material3).countMaterial(24).build();
-        compositionProductService.saveAll(List.of(compositionProduct1, compositionProduct2, compositionProduct3, compositionProduct4, compositionProduct5, compositionProduct6));
+        CompositionProduct compositionProduct1 = CompositionProduct.builder().product(product1).material(material1).countMaterial(14).build();
+        CompositionProduct compositionProduct2 = CompositionProduct.builder().product(product1).material(material3).countMaterial(10).build();
+        CompositionProduct compositionProduct3 = CompositionProduct.builder().product(product1).material(material4).countMaterial(30).build();
+        CompositionProduct compositionProduct4 = CompositionProduct.builder().product(product2).material(material2).countMaterial(5).build();
+        CompositionProduct compositionProduct5 = CompositionProduct.builder().product(product2).material(material3).countMaterial(15).build();
+        CompositionProduct compositionProduct6 = CompositionProduct.builder().product(product2).material(material4).countMaterial(24).build();
+        CompositionProduct compositionProduct7 = CompositionProduct.builder().product(product3).material(material5).countMaterial(10).build();
+        CompositionProduct compositionProduct8 = CompositionProduct.builder().product(product3).material(material3).countMaterial(25).build();
+        CompositionProduct compositionProduct9 = CompositionProduct.builder().product(product3).material(material4).countMaterial(34).build();
+
+        compositionProductService.saveAll(List.of(compositionProduct1, compositionProduct2, compositionProduct3,
+                compositionProduct4, compositionProduct5, compositionProduct6,compositionProduct7,compositionProduct8,compositionProduct9));
 
 //-----------       Клиенты
         Person person1 = Person.builder().personName("Михаил").surname("Иванов").age(45).balance(20_000)
@@ -96,13 +120,13 @@ public class DataInit implements ApplicationRunner {
                 .build();
 
         CompositionOrder compositionOrder = CompositionOrder.builder().product(product1)
-               .order(order).countProduct(20).build();
+                .order(order).countProduct(20).build();
         CompositionOrder compositionOrder1 = CompositionOrder.builder().product(product1)
-               .order(order).countProduct(30).build();
+                .order(order).countProduct(30).build();
         CompositionOrder compositionOrder3 = CompositionOrder.builder().product(product1)
-               .order(order).countProduct(10).build();
+                .order(order).countProduct(10).build();
 
-        order.setComposition(List.of(compositionOrder,compositionOrder1,compositionOrder3));
+        order.setComposition(List.of(compositionOrder, compositionOrder1, compositionOrder3));
 
         orderService.save(order);
     }
