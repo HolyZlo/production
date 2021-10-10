@@ -43,7 +43,9 @@ public class ProductResource extends RepresentationModel<ProductResource>{
     @Schema(description = "Вес продукта, гр.",required = true,
             example = "85")
     private int weight;
+    @Schema(description = "Состав продукта")
     private Collection<CompositionProductResource> compositionProduct;
+
     public ProductResource (Product product){
         this.idProduct = product.getId();
         this.productName = product.getProductName();

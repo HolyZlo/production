@@ -1,7 +1,10 @@
 package ru.prooftech.production.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
+import ru.prooftech.production.entities.Order;
 import ru.prooftech.production.entities.Person;
 import ru.prooftech.production.repositories.PersonRepository;
 
@@ -25,11 +28,21 @@ public class PersonService {
         personRepository.saveAll(persons);
     }
 
-    public Optional<Person> findById(Long id) {
-        return personRepository.findById(id);
+    public Person findById(Long id) {
+        Optional<Person> person = personRepository.findById(id);
+        if (person.isPresent()) {
+            return person.get();
+        } else {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Not found person by id - " + id);
+        }
     }
 
     public List<Person> findAll() {
         return personRepository.findAll();
     }
+
+    public List<Person> findBySurnameLikeIgnoreCase(String surname) {
+        return personRepository.findBySurnameLikeIgnoreCase(surname);
+    }
+
 }

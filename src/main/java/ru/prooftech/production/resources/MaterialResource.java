@@ -2,6 +2,7 @@ package ru.prooftech.production.resources;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.hateoas.RepresentationModel;
@@ -16,6 +17,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @Getter
 @Relation(value = "material", collectionRelation = "material")
 @Schema(description = "Материал", name = "Material")

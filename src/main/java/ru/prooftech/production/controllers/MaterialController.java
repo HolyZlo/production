@@ -33,11 +33,7 @@ public class MaterialController {
     @Operation(summary = "Получение материала", description = "Получение материала по идентификатору id", tags = {MATERIAL_TAG})
     @GetMapping("/{id}")
     public ResponseEntity<?> getMaterialById(@PathVariable @Parameter(description = "Идентификатор пользователя") Long id) {
-        Material material = materialService.findById(id).orElse(new Material());
-        if (material.getId() == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Not found material by id");
-        }
-        return ResponseEntity.ok(new MaterialResource(material));
+        return ResponseEntity.ok(new MaterialResource(materialService.findById(id)));
     }
 
     @Operation(summary = "Удаление материала", description = "Удаление материала по идентификатору id", tags = {MATERIAL_TAG})
@@ -54,12 +50,7 @@ public class MaterialController {
                                                 @RequestBody
                                                 @Parameter(description = "JSON материала", required = true)
                                                         MaterialResource materialResource) {
-        Material material = materialService.findById(id).orElse(new Material());
-        if (material.getId() == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Not found material by id");
-        } else {
-            return new ResponseEntity<>(materialService.save(material.updateFromMaterialResource(materialResource)), HttpStatus.OK);
-        }
+        return new ResponseEntity<>(materialService.save(materialService.findById(id).updateFromMaterialResource(materialResource)), HttpStatus.OK);
     }
 
     @GetMapping("/")
@@ -85,5 +76,20 @@ public class MaterialController {
                 .materialQuantity(materialResource.getMaterialQuantity())
                 .build();
         return new ResponseEntity<>(new MaterialResource(materialService.save(material)), HttpStatus.CREATED);
+    }
+
+    @Operation(summary = "Возможность поставки материала", description = "Возможность поставки материала", tags = {MATERIAL_TAG})
+    @GetMapping(name = "/{id}/possibilityOfDelivery")
+    public ResponseEntity<?> possibilityOfDeliveryMaterial(@PathVariable
+                                                           @Parameter(description = "Идентификатор материала", required = true)
+                                                                   Long id) {
+        Material material = materialService.findById(id);
+        //хардкод плохо, нужно вынести в переменные, или сделать умный анализ:
+        // необходимое количество материала для поддержания беспрерывного производства
+        if (material.getMaterialQuantity() < 1000) {
+            return new ResponseEntity<>("need " + (1000 - material.getMaterialQuantity()) + " material", HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(false, HttpStatus.BAD_REQUEST);
+        }
     }
 }

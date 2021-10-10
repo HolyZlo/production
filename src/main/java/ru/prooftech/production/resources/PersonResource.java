@@ -17,13 +17,22 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @Relation(value = "person", collectionRelation = "persons")
 @Schema(name = "Person", description = "Сущность Клиент")
 public class PersonResource extends RepresentationModel<PersonResource> {
+    @Schema(description = "Идентификатор клиента - id", example = "5")
     private Long idPerson;
 
-
+    @Schema(description = "Имя клиента", example = "Иван", required = true)
     private String personName;
+
+    @Schema(description = "Фамилия клиента", example = "Иванов", required = true)
     private String surname;
+
+    @Schema(description = "Возраст клиента, лет", example = "25", minimum = "18", required = true)
     private int age;
+
+    @Schema(description = "Контактный номер клиента", example = "+79011234567", required = true)
     private String phoneNumber;
+
+    @Schema(description = "Баланс счета клиента, руб.", example = "17000", required = true)
     private long balance;
 
     public PersonResource(Person person) {

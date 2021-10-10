@@ -4,6 +4,7 @@ import lombok.*;
 import org.springframework.hateoas.RepresentationModel;
 
 import javax.persistence.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -29,4 +30,21 @@ public class CompositionOrder extends RepresentationModel<CompositionProduct> {
     @ManyToOne(fetch = FetchType.EAGER)
     private Order order;
 
+    public void calculatePriceComposition() {
+        this.priceComposition = product.getProductPrice() * countProduct;
+    }
+
+    public boolean checkProductInventoryAndProductionAbility() {
+        AtomicBoolean productionAbility = new AtomicBoolean(true);
+        if (product.getProductQuantity() < countProduct) {
+            product.getComposition().forEach(compositionProduct -> {
+                if (compositionProduct.getMaterial().getMaterialQuantity() < (long) compositionProduct.getCountMaterial() * countProduct) {
+                    productionAbility.set(false);
+                }
+            });
+        } else {
+            return true;
+        }
+        return productionAbility.get();
+    }
 }

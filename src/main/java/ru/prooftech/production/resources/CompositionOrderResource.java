@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.hateoas.RepresentationModel;
 import org.springframework.hateoas.server.core.Relation;
 import ru.prooftech.production.controllers.OrderController;
+import ru.prooftech.production.controllers.ProductController;
 import ru.prooftech.production.entities.CompositionOrder;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
@@ -42,7 +43,9 @@ public class CompositionOrderResource extends RepresentationModel<CompositionOrd
         this.countProduct = compositionOrder.getCountProduct();
         this.productName = compositionOrder.getProduct().getProductName();
         this.productId = compositionOrder.getProduct().getId();
+        add(linkTo(methodOn(OrderController.class).getCompositionOrderById(compositionOrder.getOrder().getId())).withRel("root"));
         add(linkTo(methodOn(OrderController.class).getOrderById(compositionOrder.getOrder().getId())).withSelfRel());
+        add(linkTo(methodOn(ProductController.class).getProductById(compositionOrder.getProduct().getId())).withRel("product"));
 //        add(linkTo(methodOn(OrderController.class).getOrderById(compositionOrder.getOrder().getId())).withSelfRel());
 
     }

@@ -1,7 +1,9 @@
 package ru.prooftech.production.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 import ru.prooftech.production.entities.Material;
 import ru.prooftech.production.repositories.MaterialRepository;
 
@@ -17,8 +19,13 @@ public class MaterialService {
         this.materialRepository = materialRepository;
     }
 
-    public Optional<Material> findById(Long id) {
-        return materialRepository.findById(id);
+    public Material findById(Long id) {
+        Optional<Material> material = materialRepository.findById(id);
+        if (material.isPresent()){
+            return material.get();
+        }else {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Not found material by id - " + id);
+        }
     }
 
     public Material save(Material material) {
@@ -35,6 +42,6 @@ public class MaterialService {
 
     public boolean deleteById(Long id) {
         materialRepository.deleteById(id);
-        return findById(id).isEmpty();
+        return true;
     }
 }

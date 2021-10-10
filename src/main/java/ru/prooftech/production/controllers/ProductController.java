@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import ru.prooftech.production.entities.CompositionProduct;
 import ru.prooftech.production.entities.Material;
 import ru.prooftech.production.entities.Product;
@@ -57,9 +58,7 @@ public class ProductController {
     @GetMapping("/{id}")
     public ResponseEntity<?> getProductById(@PathVariable
                                             @Parameter(description = "Идентификатор продукта", required = true) Long id) {
-        return productService.findById(id)
-                .map(product -> ResponseEntity.ok(new ProductResource(product)))
-                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        return new ResponseEntity<>(new ProductResource(productService.findById(id)), HttpStatus.OK);
     }
 
     @Operation(summary = "Обновить продукт", description = "Обновить продукт по ключу id", tags = {PRODUCT_TAG})
@@ -69,13 +68,8 @@ public class ProductController {
                                                @RequestBody
                                                @Parameter(description = "JSON продукта", required = true)
                                                        ProductResource productResource) {
-        Product product = productService.findById(id).orElse(new Product());
-        if (product.getId() == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        } else {
-            return new ResponseEntity<>(productService
-                    .save(product.updateFromProductResource(productResource)), HttpStatus.OK);
-        }
+        return new ResponseEntity<>(productService
+                .save(productService.findById(id).updateFromProductResource(productResource)), HttpStatus.OK);
     }
 
     @Operation(summary = "Создать продукт", description = "Создать новый продукт", tags = {PRODUCT_TAG})
@@ -93,9 +87,9 @@ public class ProductController {
     @GetMapping(value = "/{id}/composition")
     public ResponseEntity<?> getComposition(@PathVariable
                                             @Parameter(description = "Ключ продукта - id", required = true) Long id) {
-        Product product = productService.findById(id).orElse(new Product());
-        if (product.getId() == null || product.getComposition().size() == 0) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        Product product = productService.findById(id);
+        if (product.getComposition().size() == 0) {
+            throw new ResponseStatusException(HttpStatus.NO_CONTENT, "Composition product is empty");
         }
         List<CompositionProductResource> compositionProductResources = new ArrayList<>();
         product.getComposition()
@@ -113,16 +107,17 @@ public class ProductController {
                                                @RequestBody
                                                @Parameter(description = "JSON Array материалов", required = true)
                                                        List<CompositionProductResource> compositionProductList) {
-        Product product = productService.findById(id).orElse(new Product());
-        if (product.getId() == null || product.getComposition().size() > 0) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        Product product = productService.findById(id);
+        if (product.getComposition().size() > 0) {
+            throw new ResponseStatusException(HttpStatus.NO_CONTENT, "Composition product already field");
         }
         compositionProductList.forEach(compositionProductResource -> product.getComposition().add(CompositionProduct.builder()
                 .countMaterial(compositionProductResource.getCountMaterial())
-                .material(materialService.findById(compositionProductResource.getIdMaterial()).orElse(new Material()))
+                .material(materialService.findById(compositionProductResource.getIdMaterial()))
                 .product(product)
                 .build()));
         productService.save(product);
+
         return new ResponseEntity<>(getComposition(product.getId()).getBody(), HttpStatus.CREATED);
     }
 
@@ -134,15 +129,22 @@ public class ProductController {
                                                @RequestBody
                                                @Parameter(description = "JSON Array материалов", required = true)
                                                        List<CompositionProductResource> compositionProductList) {
-        Product product = productService.findById(id).orElse(new Product());
-        if (product.getId() == null) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-        compositionProductList.forEach(compositionProductResource -> product.getComposition().add(CompositionProduct.builder()
-                .countMaterial(compositionProductResource.getCountMaterial())
-                .material(materialService.findById(compositionProductResource.getIdMaterial()).orElse(new Material()))
-                .product(product)
-                .build()));
+        Product product = productService.findById(id);
+        compositionProductList.forEach(compositionProductResource -> {
+            Material material = materialService.findById(compositionProductResource.getIdMaterial());
+            product.getComposition().forEach(compositionProduct -> {
+                if (compositionProduct.getMaterial().getId().equals(material.getId())) {
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Material with ID - " + material.getId() + " already exists.");
+                }
+            });
+
+            product.getComposition().add(CompositionProduct.builder()
+                    .countMaterial(compositionProductResource.getCountMaterial())
+                    .material(material)
+                    .product(product)
+                    .build());
+        });
+
         productService.save(product);
         return new ResponseEntity<>(getComposition(product.getId()).getBody(), HttpStatus.OK);
     }

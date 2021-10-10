@@ -23,6 +23,13 @@ public class DataInit implements ApplicationRunner {
 
     private CompositionProductService compositionProductService;
 
+    private CompositionOrderService compositionOrderService;
+
+    @Autowired
+    public void setCompositionOrderService(CompositionOrderService compositionOrderService) {
+        this.compositionOrderService = compositionOrderService;
+    }
+
     @Autowired
     public void setCompositionProductService(CompositionProductService compositionProductService) {
         this.compositionProductService = compositionProductService;
@@ -62,7 +69,7 @@ public class DataInit implements ApplicationRunner {
         materialService.saveAll(List.of(material1, material2, material3));
         Material material5 = Material.builder()
                 .materialName("сухой белок птицы").materialPrice(10).materialQuantity(4000).build();
-        materialService.saveAll(List.of(material1, material2, material3,material4,material5));
+        materialService.saveAll(List.of(material1, material2, material3, material4, material5));
 //-----------        Продукты
         Product product1 = Product.builder()
                 .productName("Влажный корм Pro Plan® для взрослых кошек с чувствительным пищеварением или особыми " +
@@ -90,7 +97,7 @@ public class DataInit implements ApplicationRunner {
                 .weight(85)
                 .productPrice(85.0)
                 .build();
-        productService.saveAll(List.of(product1, product2,product3));
+        productService.saveAll(List.of(product1, product2, product3));
 
         //-----------      Состав продуктов
         CompositionProduct compositionProduct1 = CompositionProduct.builder().product(product1).material(material1).countMaterial(14).build();
@@ -104,7 +111,7 @@ public class DataInit implements ApplicationRunner {
         CompositionProduct compositionProduct9 = CompositionProduct.builder().product(product3).material(material4).countMaterial(34).build();
 
         compositionProductService.saveAll(List.of(compositionProduct1, compositionProduct2, compositionProduct3,
-                compositionProduct4, compositionProduct5, compositionProduct6,compositionProduct7,compositionProduct8,compositionProduct9));
+                compositionProduct4, compositionProduct5, compositionProduct6, compositionProduct7, compositionProduct8, compositionProduct9));
 
 //-----------       Клиенты
         Person person1 = Person.builder().personName("Михаил").surname("Иванов").age(45).balance(20_000)
@@ -121,13 +128,13 @@ public class DataInit implements ApplicationRunner {
 
         CompositionOrder compositionOrder = CompositionOrder.builder().product(product1)
                 .order(order).countProduct(20).build();
-        CompositionOrder compositionOrder1 = CompositionOrder.builder().product(product1)
+        CompositionOrder compositionOrder1 = CompositionOrder.builder().product(product2)
                 .order(order).countProduct(30).build();
-        CompositionOrder compositionOrder3 = CompositionOrder.builder().product(product1)
+        CompositionOrder compositionOrder3 = CompositionOrder.builder().product(product3)
                 .order(order).countProduct(10).build();
 
+//        compositionOrderService.saveAll(List.of(compositionOrder, compositionOrder1, compositionOrder3));
         order.setComposition(List.of(compositionOrder, compositionOrder1, compositionOrder3));
-
         orderService.save(order);
     }
 }

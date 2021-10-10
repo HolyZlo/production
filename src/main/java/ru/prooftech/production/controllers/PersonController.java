@@ -50,20 +50,30 @@ public class PersonController {
     public ResponseEntity<?> getPersonById(@PathVariable
                                            @Parameter(description = "Идентификатор клиента", required = true)
                                                    Long id) {
-        Person person = personService.findById(id).orElse(new Person());
-        if (person.getId() == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Not found person by id - " +id);
-        }
-        return ResponseEntity.ok(new PersonResource(person));
+        return ResponseEntity.ok(new PersonResource(personService.findById(id)));
     }
 
+//    @Operation(summary = "Получить клиентов по фамилии",
+//            description = "Получить список всех клиентов по фамилии", tags = {PERSON_TAG})
+//    @GetMapping(value = "/", params = {"surname"})
+//    public ResponseEntity<?> getPersonsBySurname(@RequestParam(name = "surname")
+//                                                 @Parameter(description = "Фамилия клиента")
+//                                                         String surname) {
+//        List<PersonResource> personResourceList = new ArrayList<>();
+//        personService.findBySurnameLikeIgnoreCase(surname).forEach(person -> personResourceList.add(new PersonResource(person)));
+//
+//        if (personResourceList.size() > 0) {
+//            return new ResponseEntity<>(personResourceList, HttpStatus.OK);
+//        } else {
+//            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Not found persons");
+//        }
+//    }
 
     @Operation(summary = "Получить клиентов", description = "Получить список всех клиентов", tags = {PERSON_TAG})
-    @GetMapping("/")
+    @GetMapping(value = "/")
     public ResponseEntity<?> getAllPersons() {
         List<PersonResource> personResourceList = new ArrayList<>();
         personService.findAll().forEach(person -> personResourceList.add(new PersonResource(person)));
-
         if (personResourceList.size() > 0) {
             return new ResponseEntity<>(personResourceList, HttpStatus.OK);
         } else {
@@ -95,7 +105,7 @@ public class PersonController {
     public ResponseEntity<?> getOrdersByIdPerson(@PathVariable
                                                  @Parameter(description = "Идентификатор клиента", required = true)
                                                          Long id) {
-        return orderController.getAllOrders(id);
+        return orderController.getAllOrdersById(id);
     }
 
     @Operation(summary = "Получить заказ клиента", description = "Получить заказ у клиента по идентификатору клиента и заказа", tags = {PERSON_TAG, ORDER_TAG})
