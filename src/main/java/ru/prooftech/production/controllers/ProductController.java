@@ -2,9 +2,8 @@ package ru.prooftech.production.controllers;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,6 +22,7 @@ import java.util.List;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static ru.prooftech.production.configuration.SpringFoxConfig.PRODUCT_TAG;
 
+@AllArgsConstructor
 @RestController
 @RequestMapping("/products")
 @Tag(name = PRODUCT_TAG, description = "Продукты производимые компанией")
@@ -30,16 +30,6 @@ public class ProductController {
 
     private ProductService productService;
     private MaterialService materialService;
-
-    @Autowired
-    public void setMaterialService(MaterialService materialService) {
-        this.materialService = materialService;
-    }
-
-    @Autowired
-    public void setProductService(ProductService productService) {
-        this.productService = productService;
-    }
 
     @Operation(summary = "Получить все продукты", description = "Получить список всех продуктов JSON", tags = {PRODUCT_TAG})
     @GetMapping("/")

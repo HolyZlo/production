@@ -1,7 +1,6 @@
 package ru.prooftech.production.entities;
 
 import lombok.*;
-import org.springframework.hateoas.RepresentationModel;
 
 import javax.persistence.*;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -12,7 +11,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 @Setter
 @Builder
 @Entity(name = "order_compositions")
-public class CompositionOrder extends RepresentationModel<CompositionProduct> {
+public class CompositionOrder {
     @Id
     @GeneratedValue
     @Column(name = "id")
@@ -30,8 +29,8 @@ public class CompositionOrder extends RepresentationModel<CompositionProduct> {
     @ManyToOne(fetch = FetchType.EAGER)
     private Order order;
 
-    public void calculatePriceComposition() {
-        this.priceComposition = product.getProductPrice() * countProduct;
+    public double calculatePriceComposition() {
+       return this.priceComposition = product.getProductPrice() * countProduct;
     }
 
     public boolean checkProductInventoryAndProductionAbility() {

@@ -1,6 +1,6 @@
 package ru.prooftech.production.services;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -10,47 +10,26 @@ import ru.prooftech.production.repositories.OrderRepository;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
+@AllArgsConstructor
 @Service("orderService")
 public class OrderService {
     private OrderRepository orderRepository;
     private CompositionOrderService compositionOrderService;
 
-    @Autowired
-    public void setCompositionOrderService(CompositionOrderService compositionOrderService) {
-        this.compositionOrderService = compositionOrderService;
-    }
-
-    @Autowired
-    public void setOrderRepository(OrderRepository orderRepository) {
-        this.orderRepository = orderRepository;
-    }
-
     public Order findById(Long id) {
-        Optional<Order> order = orderRepository.findById(id);
-        if (order.isPresent()) {
-            return order.get();
-        } else {
+        return orderRepository.findById(id).orElseThrow(() -> {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Not found order by id - " + id);
-        }
+        });
     }
 
     public Order save(Order order) {
         checkCompositionIsNull(order);
-        checkOrderNameIsNull(order);
-        order.calculatePriceOrder();
-        if (order.getOrderName().isEmpty()) {
-            orderRepository.save(order).setOrderName("Заказ №" + order.getId() + ",для клиента - " + order.getPerson().getSurname() + " от " + order.getCreatedOn());
-        }
         return orderRepository.save(order);
     }
 
     public void saveAll(Iterable<Order> iterable) {
-        iterable.forEach(order -> {
-            checkCompositionIsNull(order);
-            checkOrderNameIsNull(order);
-        });
+        iterable.forEach(this::checkCompositionIsNull);
         orderRepository.saveAll(iterable);
     }
 
@@ -79,11 +58,4 @@ public class OrderService {
         }
         order.calculatePriceOrder();
     }
-
-    private void checkOrderNameIsNull(Order order) {
-        if (order.getOrderName() == null) {
-            order.setOrderName("");
-        }
-    }
-
 }

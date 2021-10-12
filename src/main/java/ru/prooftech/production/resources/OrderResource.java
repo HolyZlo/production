@@ -8,7 +8,6 @@ import org.springframework.hateoas.RepresentationModel;
 import org.springframework.hateoas.server.core.Relation;
 import ru.prooftech.production.controllers.OrderController;
 import ru.prooftech.production.controllers.PersonController;
-import ru.prooftech.production.entities.CompositionOrder;
 import ru.prooftech.production.entities.Order;
 
 import javax.persistence.Temporal;
@@ -26,7 +25,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @Getter
 @Relation(value = "order", collectionRelation = "orders")
 @Schema(name = "Order", description = "Сущность заказа")
-public class OrderResource extends RepresentationModel<Order> {
+public class OrderResource extends RepresentationModel<OrderResource> {
     @Schema(description = "Идентификатор заказа")
     private Long id;
 
@@ -56,7 +55,7 @@ public class OrderResource extends RepresentationModel<Order> {
         order.getComposition().forEach(compositionOrder -> compositionOrderResources.add(new CompositionOrderResource(compositionOrder)));
 
         this.id = order.getId();
-        this.orderName = order.getOrderName();
+        this.orderName = ("Заказ №" + order.getId() + ",для клиента - " + order.getPerson().getSurname() + " от " + order.getCreatedOn());
         this.createdOn = order.getCreatedOn();
         this.closedOn = order.getClosedOn();
         this.inTotal = order.getInTotal();

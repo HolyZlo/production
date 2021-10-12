@@ -3,7 +3,7 @@ package ru.prooftech.production.controllers;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,34 +18,29 @@ import java.util.List;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static ru.prooftech.production.configuration.SpringFoxConfig.MATERIAL_TAG;
 
-
+@AllArgsConstructor
 @RestController
 @RequestMapping("/materials")
 @Tag(name = MATERIAL_TAG, description = "Материалы используемые в производстве")
 public class MaterialController {
     private MaterialService materialService;
 
-    @Autowired
-    public void setMaterialService(MaterialService materialService) {
-        this.materialService = materialService;
-    }
-
     @Operation(summary = "Получение материала", description = "Получение материала по идентификатору id", tags = {MATERIAL_TAG})
     @GetMapping("/{id}")
-    public ResponseEntity<?> getMaterialById(@PathVariable @Parameter(description = "Идентификатор пользователя") Long id) {
+    public ResponseEntity<?> getMaterialById(@PathVariable @Parameter(description = "Идентификатор материала") Long id) {
         return ResponseEntity.ok(new MaterialResource(materialService.findById(id)));
     }
 
     @Operation(summary = "Удаление материала", description = "Удаление материала по идентификатору id", tags = {MATERIAL_TAG})
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteMaterialById(@PathVariable @Parameter(description = "Идентификатор пользователя") Long id) {
+    public ResponseEntity<?> deleteMaterialById(@PathVariable @Parameter(description = "Идентификатор материала") Long id) {
         return materialService.deleteById(id) ? new ResponseEntity<>(HttpStatus.NO_CONTENT) : new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
     @Operation(summary = "Обновление материала", description = "Обновление материала по идентификатору id", tags = {MATERIAL_TAG})
     @PutMapping(value = "/{id}", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
     public ResponseEntity<?> updateMaterialById(@PathVariable
-                                                @Parameter(description = "Идентификатор пользователя", required = true)
+                                                @Parameter(description = "Идентификатор материала", required = true)
                                                         Long id,
                                                 @RequestBody
                                                 @Parameter(description = "JSON материала", required = true)

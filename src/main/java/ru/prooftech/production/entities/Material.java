@@ -1,7 +1,6 @@
 package ru.prooftech.production.entities;
 
 import lombok.*;
-import org.springframework.hateoas.RepresentationModel;
 import ru.prooftech.production.resources.MaterialResource;
 
 import javax.persistence.*;
@@ -14,7 +13,7 @@ import java.util.Collection;
 @Setter
 @Builder
 @Entity(name = "materials")
-public class Material extends RepresentationModel<Material> {
+public class Material{
     @Id
     @GeneratedValue
     @Column(name = "id")

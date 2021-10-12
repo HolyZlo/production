@@ -1,7 +1,6 @@
 package ru.prooftech.production;
 
-import org.aspectj.weaver.ast.Or;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
@@ -9,8 +8,9 @@ import ru.prooftech.production.entities.*;
 import ru.prooftech.production.services.*;
 
 import java.sql.Timestamp;
-import java.util.*;
+import java.util.List;
 
+@AllArgsConstructor
 @Component
 public class DataInit implements ApplicationRunner {
     private ProductService productService;
@@ -25,36 +25,6 @@ public class DataInit implements ApplicationRunner {
 
     private CompositionOrderService compositionOrderService;
 
-    @Autowired
-    public void setCompositionOrderService(CompositionOrderService compositionOrderService) {
-        this.compositionOrderService = compositionOrderService;
-    }
-
-    @Autowired
-    public void setCompositionProductService(CompositionProductService compositionProductService) {
-        this.compositionProductService = compositionProductService;
-    }
-
-    @Autowired
-    public void setOrderService(OrderService orderService) {
-        this.orderService = orderService;
-    }
-
-    @Autowired
-    public void setMaterialService(MaterialService materialService) {
-        this.materialService = materialService;
-    }
-
-    @Autowired
-    public void setProductService(ProductService productService) {
-        this.productService = productService;
-    }
-
-    @Autowired
-    public void setPersonService(PersonService personService) {
-        this.personService = personService;
-    }
-
     @Override
     public void run(ApplicationArguments args) {
 //-----------        Материалы
@@ -66,7 +36,6 @@ public class DataInit implements ApplicationRunner {
                 .materialName("масла и жиры").materialPrice(200).materialQuantity(3000).build();
         Material material4 = Material.builder()
                 .materialName("продукты переработки растительного сырья").materialPrice(50).materialQuantity(2000).build();
-        materialService.saveAll(List.of(material1, material2, material3));
         Material material5 = Material.builder()
                 .materialName("сухой белок птицы").materialPrice(10).materialQuantity(4000).build();
         materialService.saveAll(List.of(material1, material2, material3, material4, material5));

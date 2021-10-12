@@ -3,14 +3,12 @@ package ru.prooftech.production.controllers;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
-import ru.prooftech.production.entities.Material;
 import ru.prooftech.production.entities.Person;
-import ru.prooftech.production.resources.MaterialResource;
 import ru.prooftech.production.resources.PersonResource;
 import ru.prooftech.production.services.OrderService;
 import ru.prooftech.production.services.PersonService;
@@ -22,6 +20,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static ru.prooftech.production.configuration.SpringFoxConfig.ORDER_TAG;
 import static ru.prooftech.production.configuration.SpringFoxConfig.PERSON_TAG;
 
+@AllArgsConstructor
 @RestController
 @RequestMapping("/persons")
 @Tag(name = PERSON_TAG, description = "Клиенты")
@@ -29,21 +28,6 @@ public class PersonController {
     private PersonService personService;
     private OrderService orderService;
     private OrderController orderController;
-
-    @Autowired
-    public void setOrderController(OrderController orderController) {
-        this.orderController = orderController;
-    }
-
-    @Autowired
-    public void setPersonService(PersonService personService) {
-        this.personService = personService;
-    }
-
-    @Autowired
-    public void setOrderService(OrderService orderService) {
-        this.orderService = orderService;
-    }
 
     @Operation(summary = "Получить клиента", description = "Получить клиента по идентификатору id", tags = {PERSON_TAG})
     @GetMapping("/{id}")

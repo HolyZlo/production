@@ -1,14 +1,11 @@
 package ru.prooftech.production.entities;
 
 import lombok.*;
-import org.springframework.hateoas.RepresentationModel;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicReference;
 
 
 @Getter
@@ -17,13 +14,14 @@ import java.util.concurrent.atomic.AtomicReference;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity(name = "orders")
-public class Order extends RepresentationModel<Order> {
+public class Order {
     @Id
     @GeneratedValue
     @Column(name = "id")
     private Long id;
-    @Column(name = "name")
-    private String orderName;
+
+//    @Column(name = "name")
+//    private String orderName;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "createdOn")
@@ -43,19 +41,12 @@ public class Order extends RepresentationModel<Order> {
 
 
     public void calculatePriceOrder() {
-        AtomicReference<Double> total = new AtomicReference<>(0.0);
-        composition.forEach((compositionOrder -> total.set(total.get() + compositionOrder.getPriceComposition())));
-        this.inTotal = total.get();
+        this.inTotal = composition.stream().mapToDouble(CompositionOrder::calculatePriceComposition).sum();
     }
 
     public boolean checkThePossibilityOfCompletingTheOrder() {
-        AtomicBoolean possibilityOrder = new AtomicBoolean(true);
-        composition.forEach(compositionOrder -> {
-            if (!compositionOrder.checkProductInventoryAndProductionAbility()) {
-                possibilityOrder.set(false);
-            }
-        });
-        return possibilityOrder.get();
+//        return composition.stream().allMatch(CompositionOrder::checkProductInventoryAndProductionAbility);
+        return !composition.stream().anyMatch(compositionOrder -> !compositionOrder.checkProductInventoryAndProductionAbility());
     }
 
     public void closeOrder(){

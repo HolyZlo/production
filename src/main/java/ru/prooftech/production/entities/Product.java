@@ -1,8 +1,6 @@
 package ru.prooftech.production.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
-import org.springframework.hateoas.RepresentationModel;
 import ru.prooftech.production.resources.ProductResource;
 
 import javax.persistence.*;
@@ -14,7 +12,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity(name = "products")
-public class Product extends RepresentationModel<Product> {
+public class Product{
     @Id
     @GeneratedValue
     @Column(name = "id")

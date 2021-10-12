@@ -3,14 +3,13 @@ package ru.prooftech.production.controllers;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import ru.prooftech.production.entities.CompositionOrder;
 import ru.prooftech.production.entities.Order;
-import ru.prooftech.production.entities.Person;
 import ru.prooftech.production.entities.Product;
 import ru.prooftech.production.resources.CompositionOrderResource;
 import ru.prooftech.production.resources.OrderResource;
@@ -23,30 +22,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static ru.prooftech.production.configuration.SpringFoxConfig.ORDER_TAG;
-import static ru.prooftech.production.configuration.SpringFoxConfig.PERSON_TAG;
 
 @RestController
 @RequestMapping("/orders")
+@AllArgsConstructor
 @Tag(name = ORDER_TAG, description = "Заказы клиентов")
 public class OrderController {
     private OrderService orderService;
     private ProductService productService;
     private PersonService personService;
-
-    @Autowired
-    public void setPersonService(PersonService personService) {
-        this.personService = personService;
-    }
-
-    @Autowired
-    public void setOrderService(OrderService orderService) {
-        this.orderService = orderService;
-    }
-
-    @Autowired
-    public void setProductService(ProductService productService) {
-        this.productService = productService;
-    }
 
     @Operation(summary = "Получение заказа",
             description = "Получение заказа по идентификатору id", tags = {ORDER_TAG})

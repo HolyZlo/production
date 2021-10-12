@@ -1,6 +1,6 @@
 package ru.prooftech.production.services;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -8,26 +8,17 @@ import ru.prooftech.production.entities.Product;
 import ru.prooftech.production.repositories.ProductRepository;
 
 import java.util.List;
-import java.util.Optional;
 
+@AllArgsConstructor
 @Service("productService")
 public class ProductService {
 
     private ProductRepository productRepository;
 
-    @Autowired
-    public void setProductRepository(ProductRepository productRepository) {
-        this.productRepository = productRepository;
-    }
-
     public Product findById(Long id) {
-        Optional<Product> product = productRepository.findById(id);
-        if (product.isPresent()) {
-        return product.get();
-        } else {
+        return productRepository.findById(id).orElseThrow(() -> {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Not found product by id - " + id);
-        }
-
+        });
     }
 
     public Product save(Product product) {

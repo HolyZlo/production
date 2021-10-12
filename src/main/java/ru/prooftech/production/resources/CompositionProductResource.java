@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.hateoas.RepresentationModel;
 import org.springframework.hateoas.server.core.Relation;
+import ru.prooftech.production.controllers.MaterialController;
 import ru.prooftech.production.controllers.ProductController;
 import ru.prooftech.production.entities.CompositionProduct;
 
@@ -38,5 +39,7 @@ public class CompositionProductResource extends RepresentationModel<CompositionP
         this.idMaterial = compositionProduct.getMaterial().getId();
         add(linkTo(methodOn(ProductController.class).getProductById(compositionProduct.getProduct().getId())).withRel("product"));
         add(linkTo(methodOn(ProductController.class).getComposition(compositionProduct.getProduct().getId())).withSelfRel());
+        add(linkTo(methodOn(MaterialController.class).getMaterialById(compositionProduct.getMaterial().getId())).withRel("material"));
+
     }
 }
